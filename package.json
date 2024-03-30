@@ -1,10 +1,15 @@
 {
   "name": "@redstinkcreature/lib-utilities",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "0.1.0",
+  "description": "Base utilities project for utils, build and docs",
+  "author": "Gerben Rampaart",
   "private": true,
   "license": "UNLICENSED",
+  "module": "index.ts",
+  "type": "module",
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
   "scripts": {
     "build": "bun build ./src/main.ts --target=bun --outfile=./dist/app.js",
     "format": "deno fmt",
@@ -13,9 +18,11 @@
     "lint": "deno lint",
     "test": "bun test --inpect-wait",
     "repl": "bun run ./src/util/repl.ts",
-    "ncu": "ncu -u"
+    "ncu": "ncu -u",
+    "publish": "jsr publish"
   },
   "dependencies": {
+    "@nestjs/config": "^3.2.1",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.3.4",
     "@nestjs/core": "^10.3.4",
@@ -42,6 +49,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "jsr": "^0.12.1",
     "npm-check-updates": "^16.14.17",
     "@nestjs/cli": "^10.3.2",
     "@nestjs/schematics": "^10.1.1",
@@ -52,10 +60,5 @@
     "@types/uuid": "^9.0.8",
     "supertest": "^6.3.4",
     "@types/bun": "latest"
-  },
-  "module": "index.ts",
-  "type": "module",
-  "peerDependencies": {
-    "typescript": "^5.0.0"
   }
 }

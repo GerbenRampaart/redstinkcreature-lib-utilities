@@ -1,1 +1,1 @@
-export * from "./lib-utlities.module.js";
+export * from "./lib-utilities.module.ts";
