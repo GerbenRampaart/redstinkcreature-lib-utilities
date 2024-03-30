@@ -2,6 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { AppConfigService } from "./app-config.service.js";
 import { AppConfigModule } from "./app-config.module.js";
 import { z } from "zod";
+import type { UtilitiesSchemaType } from "./app-config.schema.js";
 
 describe("AppConfigService", () => {
   const appSchema = z.object({
@@ -9,30 +10,30 @@ describe("AppConfigService", () => {
   });
 
   type AppSchemaType = z.infer<typeof appSchema>;
-  let service: AppConfigService<AppSchemaType>;
+  let service: AppConfigService<AppSchemaType & UtilitiesSchemaType>;
 
   beforeEach(async () => {
-
-
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        AppConfigModule.registerAsync(),
+        AppConfigModule.registerAsync<AppSchemaType>(appSchema),
       ],
       providers: [
         AppConfigService,
       ],
     }).compile();
 
-    service = await module.resolve<appSchemaType>(AppConfigService);
-
-    service.get('')
+    service = await module.resolve(AppConfigService);
   });
 
   it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  it("should be 3000", () => {
-    expect(service.get('PORT')).toBe(3000);
+  it("should be bla", () => {
+    expect(service.get('TEST')).toBe('bla');
+  });
+
+  it("should be info", () => {
+    expect(service.get('LOG_LEVEL')).toBe('info');
   });
 });

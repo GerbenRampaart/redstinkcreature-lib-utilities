@@ -1,7 +1,7 @@
 /**
  * Array from pino.LevelWithSilent
  */
-export const pinoLevels: string[] = [
+export const pinoLevels = [
   "silent",
   "fatal",
   "error",
@@ -10,13 +10,3 @@ export const pinoLevels: string[] = [
   "debug",
   "trace",
 ] as const;
-
-export function logLevelOrDefault(): string {
-  const v = process.env['LOG_LEVEL'] ?? 'debug';
-
-  if (!pinoLevels.includes(v)) {
-      return 'debug';
-  }
-
-  return v;
-}

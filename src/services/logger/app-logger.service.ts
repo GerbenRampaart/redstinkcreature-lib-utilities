@@ -6,12 +6,13 @@ import { pinoLevels } from "./levels";
 @Injectable()
 export class AppLoggerService extends PinoLogger {
   constructor(
+    // @ts-ignore
     @Inject(PARAMS_PROVIDER_TOKEN) private readonly params: Params,
   ) {
     super(params);
   }
 
-  public set level(lvl: string) {
+  public set level(lvl: typeof pinoLevels[number]) {
     if (!pinoLevels.includes(lvl)) {
       throw new Error(
         `Tried to set LogLevel ${lvl}. Supported levels: ${

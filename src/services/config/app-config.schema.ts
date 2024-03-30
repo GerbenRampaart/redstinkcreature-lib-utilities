@@ -1,27 +1,15 @@
 import { z } from 'zod';
+import { pinoLevels } from '../logger/levels';
 
-export const AppConfigSchema = z.object({
-  PORT: z.coerce.number().optional().default(3000),
-  
+export const UtilitiesSchema = z.object({
   NODE_ENV: z.enum([
     "development",
     "production",
     "test",
-    "provision",
     "repl",
-  ]).optional().default("development"),
+  ]).default('development'),
+  LOG_LEVEL: z.enum(pinoLevels).optional().default("info"),
+}).partial();
 
-  LOG_LEVEL: z.enum([
-    "silent",
-    "fatal",
-    "error",
-    "warn",
-    "info",
-    "debug",
-    "trace", 
-  ]).optional().default("info"),
+export type UtilitiesSchemaType = z.infer<typeof UtilitiesSchema>;
 
-  
-});
-
-export type ProcessEnv = z.infer<typeof AppConfigSchema>;

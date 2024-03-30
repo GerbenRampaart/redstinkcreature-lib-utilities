@@ -3,19 +3,25 @@ import { AppConfigService } from "./app-config.service.js";
 import { NodeEnv } from "../../util/NodeEnv.js";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { z } from "zod";
+import { UtilitiesSchema, type UtilitiesSchemaType } from "./app-config.schema.js";
 
-export type ProcessEnvSchema<TSchema extends z.ZodRawShape> = z.ZodObject<TSchema>;
+export type ProcessEnvType = z.ZodObject<{ [key in string]: any}>;
 
 @Module({})
 export class AppConfigModule {
-  public static async registerAsync<TSchema extends z.ZodRawShape = {}>(processEnv?: ProcessEnvSchema<TSchema>): Promise<DynamicModule> {
-    //type targetType = z.infer<typeof processEnv>;
+  public static async registerAsync<TSchema>(
+    processEnv?: ProcessEnvType
+  ): Promise<DynamicModule> {
+    
     return {
       module: AppConfigModule,
       imports: [
         ConfigModule.forRoot({
           validate: (env) => {
-            return processEnv?.parse(env) ?? env;
+            console.log(env)
+            env = processEnv?.parse(env) ?? env;
+            console.log(env)
+            return UtilitiesSchema.parse(env);
           },
           isGlobal: true,
           validationOptions: {
@@ -29,8 +35,8 @@ export class AppConfigModule {
       ],
       providers: [
         {
-          useFactory: (c: ConfigService<TSchema, true>) => {
-            return new AppConfigService(c)
+          useFactory: (c: ConfigService<TSchema & UtilitiesSchemaType, true>) => {
+            return new AppConfigService<TSchema & UtilitiesSchemaType>(c)
           },
           provide: AppConfigService,
           inject: [

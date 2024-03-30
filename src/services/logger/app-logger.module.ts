@@ -1,22 +1,17 @@
-import { forwardRef, Module } from "@nestjs/common";
-import { AppLoggerService } from "./app-logger.service";
+import { Module } from "@nestjs/common";
+import { AppLoggerService } from "./app-logger.service.js";
 import { LoggerModule } from "nestjs-pino";
-import { IncomingMessage } from "http";
-import { ServerResponse } from "http";
+import { IncomingMessage, ServerResponse} from "http";
 import { type ReqId } from "pino-http";
 import { v4 } from "uuid";
-import { AppConfigService } from "../config/app-config.service";
-import { AppPackageJsonService } from "../package/packageJson.service";
+import { AppPackageJsonService } from "../package/packageJson.service.js";
 import { type PrettyOptions } from "pino-pretty";
-import { NodeEnv } from "../../util/NodeEnv";
-import { LibUtilitiesModule } from "../../lib-utilities.module";
-import { LibUtilitiesConstants } from "../../util/LibUtilitiesConstants";
+import { NodeEnv } from "../../util/NodeEnv.js";
+import { LibUtilitiesConstants } from "../../util/LibUtilitiesConstants.js";
 
 @Module({
   imports: [
     LoggerModule.forRootAsync({
-      imports: [
-      ],
       inject: [
         AppPackageJsonService,
       ],
@@ -31,7 +26,9 @@ import { LibUtilitiesConstants } from "../../util/LibUtilitiesConstants";
 
         return {
           pinoHttp: {
-            level: config.get('LOG_LEVEL'),
+            // We coalesce the log level to 'info' if it's not set,
+            // but it really should never 
+            level: process.env['LOG_LEVEL'] ?? 'info',
             name: `${pj.product.pj.name}:${pj.product.pj.version}`,
             transport: NodeEnv.isDebug
               ? {
