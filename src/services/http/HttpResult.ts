@@ -1,7 +1,7 @@
-import { AxiosError, type AxiosResponse } from "axios";
-import type { AxiosRequestConfigWithMetadata } from "./AxiosRequestConfigWithMetadata";
-import { HttpException, HttpStatus } from "@nestjs/common";
-import { CurlHelper } from ".";
+import { AxiosError, type AxiosResponse } from 'axios';
+import type { AxiosRequestConfigWithMetadata } from './AxiosRequestConfigWithMetadata';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { CurlHelper } from '.';
 
 /*
 
@@ -20,86 +20,87 @@ import { CurlHelper } from ".";
 
 */
 export class HttpResult<TResponseType, TBodyType = unknown> {
-  constructor(
-    public cfg: AxiosRequestConfigWithMetadata<TBodyType>,
-    public response?: AxiosResponse<TResponseType, TBodyType>,
-    public error?: AxiosError,
-  ) {
-  }
+	constructor(
+		public cfg: AxiosRequestConfigWithMetadata<TBodyType>,
+		public response?: AxiosResponse<TResponseType, TBodyType>,
+		public error?: AxiosError,
+	) {
+	}
 
-  public get timedOut() {
-    return this.error?.code === "ETIMEDOUT" ||
-      this.error?.code === "ECONNABORTED";
-  }
+	public get timedOut() {
+		return this.error?.code === 'ETIMEDOUT' ||
+			this.error?.code === 'ECONNABORTED';
+	}
 
-  public get canceled() {
-    return this.error?.code === "ERR_CANCELED";
-  }
+	public get canceled() {
+		return this.error?.code === 'ERR_CANCELED';
+	}
 
-  public get elapsed(): number | undefined {
-    return this.cfg.metadata?.elapsed;
-  }
+	public get elapsed(): number | undefined {
+		return this.cfg.metadata?.elapsed;
+	}
 
-  public get curl(): string {
-    const ch = new CurlHelper(this.cfg);
-    return ch.generateCommand();
-  }
+	public get curl(): string {
+		const ch = new CurlHelper(this.cfg);
+		return ch.generateCommand();
+	}
 
-  /**
-   * This will return true if:
-   * - There is a this.response object (there won't be when an exception occurred).
-   * - There is NO this.error object (there always is when an error occurred).
-   * - The response status is in the 200..299 range.
-   *
-   * otherwise false.
-   *
-   * In other words, this is always safe code:
-   *
-   * if (result.ok) {
-   *  // Your happy path code with result.response available
-   * }
-   */
-  public get ok() {
-    return (this.response !== undefined &&
-      this.response.status >= 200 &&
-      this.response.status < 300 &&
-      this.error === undefined);
-  }
+	/**
+	 * This will return true if:
+	 * - There is a this.response object (there won't be when an exception occurred).
+	 * - There is NO this.error object (there always is when an error occurred).
+	 * - The response status is in the 200..299 range.
+	 *
+	 * otherwise false.
+	 *
+	 * In other words, this is always safe code:
+	 *
+	 * if (result.ok) {
+	 *  // Your happy path code with result.response available
+	 * }
+	 */
+	public get ok() {
+		return (this.response !== undefined &&
+			this.response.status >= 200 &&
+			this.response.status < 300 &&
+			this.error === undefined);
+	}
 
-  /**
-   * This function is intended to be run without any side-effects if NO error occurred.
-   * Run this in case you want to throw a NestJs HttpException with the AxiosError serialized
-   * in there. You can use your own ErrorFilter to adjust it further.
-   *
-   * This will only throw an exception if this.ok is false and there is an error object (this.error).
-   * In other words, if the request went well, nothing will happen.
-   *
-   * if (result.ok) {
-   *  // Your happy path code
-   * }
-   *
-   * // Free to invoke this
-   * result.throwHttpExceptionIfError(HttpStatus.BAD_REQUEST); // throw exception (if any) and force a BAD_REQUEST
-   *
-   * @param forceStatus (optional)
-   * Override the status in the thrown HttpException with your own status. If not
-   * supplied, the function will try to get the http status from axiosResult.error.response.status,
-   * (essentialy re-throwing the http status the api you called returned), if not available, it
-   * defaults to 500.
-   *
-   * @param forceMessage (optional)
-   * Defaults to error.toJSON or 'Unhandled exception' if error is not available.
-   */
-  public throwHttpExceptionIfError(
-    forceStatus?: HttpStatus,
-    forceMessage?: string,
-  ): void {
-    if (!this.ok && this.error) {
-      const status = forceStatus ?? this.error?.response?.status ?? 500;
-      const msg = forceMessage ?? this.error?.toJSON() ?? "Unhandled exception";
-      throw new HttpException(msg, status, {
-        cause: this.error,
-      });
-    }
-  }
+	/**
+	 * This function is intended to be run without any side-effects if NO error occurred.
+	 * Run this in case you want to throw a NestJs HttpException with the AxiosError serialized
+	 * in there. You can use your own ErrorFilter to adjust it further.
+	 *
+	 * This will only throw an exception if this.ok is false and there is an error object (this.error).
+	 * In other words, if the request went well, nothing will happen.
+	 *
+	 * if (result.ok) {
+	 *  // Your happy path code
+	 * }
+	 *
+	 * // Free to invoke this
+	 * result.throwHttpExceptionIfError(HttpStatus.BAD_REQUEST); // throw exception (if any) and force a BAD_REQUEST
+	 *
+	 * @param forceStatus (optional)
+	 * Override the status in the thrown HttpException with your own status. If not
+	 * supplied, the function will try to get the http status from axiosResult.error.response.status,
+	 * (essentialy re-throwing the http status the api you called returned), if not available, it
+	 * defaults to 500.
+	 *
+	 * @param forceMessage (optional)
+	 * Defaults to error.toJSON or 'Unhandled exception' if error is not available.
+	 */
+	public throwHttpExceptionIfError(
+		forceStatus?: HttpStatus,
+		forceMessage?: string,
+	): void {
+		if (!this.ok && this.error) {
+			const status = forceStatus ?? this.error?.response?.status ?? 500;
+			const msg = forceMessage ?? this.error?.toJSON() ??
+				'Unhandled exception';
+			throw new HttpException(msg, status, {
+				cause: this.error,
+			});
+		}
+	}
 }

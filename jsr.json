@@ -1,5 +1,5 @@
 {
-    "name": "@redstinkcreature/lib-utilities",
-    "version": "0.1.0",
-    "exports": "./index.ts"
-  }
+  "name": "@redstinkcreature/lib-utilities",
+  "version": "0.1.0",
+  "exports": "./index.ts"
+}

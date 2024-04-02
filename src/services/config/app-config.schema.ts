@@ -1,15 +1,10 @@
+import { levels } from '../../util/LOG_LEVEL.ts';
+import { envs } from '../../util/NODE_ENV.ts';
 import { z } from 'zod';
-import { pinoLevels } from '../logger/levels';
 
 export const UtilitiesSchema = z.object({
-  NODE_ENV: z.enum([
-    "development",
-    "production",
-    "test",
-    "repl",
-  ]).default('development'),
-  LOG_LEVEL: z.enum(pinoLevels).optional().default("info"),
+	NODE_ENV: z.enum(envs),
+	LOG_LEVEL: z.enum(levels),
 }).partial();
 
 export type UtilitiesSchemaType = z.infer<typeof UtilitiesSchema>;
-

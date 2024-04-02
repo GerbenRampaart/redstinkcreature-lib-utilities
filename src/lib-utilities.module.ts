@@ -1,15 +1,15 @@
-import { Module, type OnModuleInit } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { AppLoggerService } from "./services/logger/app-logger.service.js";
-import { AppPackageJsonService } from "./services/package/packageJson.service.js";
-import { PathsService } from "./services/paths/paths.service.js";
-import { AppConfigModule } from "./services/config/app-config.module.js";
-import { AppConfigService } from "./services/config/app-config.service.js";
+import { Module, type OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { AppLoggerService } from './services/logger/app-logger.service.ts';
+import { AppPackageJsonService } from './services/package/packageJson.service.ts';
+import { PathsService } from './services/paths/paths.service.ts';
+import { AppConfigModule } from './services/config/app-config.module.ts';
+import { AppConfigService } from './services/config/app-config.service.ts';
 import { z } from 'zod';
 
 export type LibUtilitiesOptions<TSchema extends z.ZodRawShape> = {
-  schema?: z.ZodObject<TSchema>
-}
+	schema?: z.ZodObject<TSchema>;
+};
 
 /**
  * The AppUtilitiesModule is a ground-up module, which provides some fundamental
@@ -26,41 +26,41 @@ export type LibUtilitiesOptions<TSchema extends z.ZodRawShape> = {
  * It depends on AppPackageJsonService and AppConfigService, the module waits for
  * those services to be available using ModuleRef().
  */
-@Module({
-})
+@Module({})
 export class LibUtilitiesModule implements OnModuleInit {
-  public static async registerAsync<TSchema extends z.ZodRawShape = {}>(options?: LibUtilitiesOptions<TSchema>) {
-    return {
-      module: LibUtilitiesModule,
-      imports: [
-        AppConfigModule.registerAsync(options?.schema)
-      ],
-      providers: [
-        ConfigService,
-        AppConfigService,
-        AppPackageJsonService,
-        AppLoggerService,
-        PathsService,
-      ],
-      exports: [
-        ConfigService,
-        AppConfigService,
-        AppLoggerService,
-        AppPackageJsonService,
-        PathsService,
-      ],
-    }
+	public static async registerAsync<TSchema extends z.ZodRawShape = {}>(
+		options?: LibUtilitiesOptions<TSchema>,
+	) {
+		return {
+			module: LibUtilitiesModule,
+			imports: [
+				AppConfigModule.registerAsync(options?.schema),
+			],
+			providers: [
+				ConfigService,
+				AppConfigService,
+				AppPackageJsonService,
+				AppLoggerService,
+				PathsService,
+			],
+			exports: [
+				ConfigService,
+				AppConfigService,
+				AppLoggerService,
+				AppPackageJsonService,
+				PathsService,
+			],
+		};
+	}
+	constructor(
+		private readonly l: AppLoggerService,
+		private readonly pj: AppPackageJsonService,
+	) {
+	}
 
-  }
-  constructor(
-    private readonly l: AppLoggerService,
-    private readonly pj: AppPackageJsonService,
-  ) {
-  }
-
-  async onModuleInit() {
-    this.l.info(
-      `Loaded package.json ${this.pj.product.pj.name}:${this.pj.product.pj.version}`,
-    );
-  }
+	async onModuleInit() {
+		this.l.info(
+			`Loaded package.json ${this.pj.product.pj.name}:${this.pj.product.pj.version}`,
+		);
+	}
 }
