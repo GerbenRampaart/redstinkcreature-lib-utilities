@@ -4,15 +4,17 @@ import { LoggerModule } from 'nestjs-pino';
 import { IncomingMessage, ServerResponse } from 'http';
 import { type ReqId } from 'pino-http';
 import { v4 } from 'uuid';
-import { AppPackageJsonService } from '../package/packageJson.service.ts';
 import { type PrettyOptions } from 'pino-pretty';
-import { NodeEnv } from '../../util/NODE_ENV.ts';
-import { LibUtilitiesConstants } from '../../util/LibUtilitiesConstants.ts';
-import { LOG_LEVEL } from '../../util/LOG_LEVEL.ts';
+import { AppPackageJsonService } from '../package/package.service.ts';
+import { RawValueService } from '../misc/index.ts';
+import { PackageModule } from '../package/package.module.ts';
 
 @Module({
 	imports: [
 		LoggerModule.forRootAsync({
+			imports: [
+				PackageModule,
+			],
 			inject: [
 				AppPackageJsonService,
 			],
@@ -27,9 +29,9 @@ import { LOG_LEVEL } from '../../util/LOG_LEVEL.ts';
 
 				return {
 					pinoHttp: {
-						level: LOG_LEVEL(),
+						level: RawValueService.rawLogLevel,
 						name: `${pj.product.pj.name}:${pj.product.pj.version}`,
-						transport: NodeEnv.isDebug
+						transport: RawValueService.nodeEnv.isDebug
 							? {
 								target: 'pino-pretty',
 								options,
@@ -40,8 +42,11 @@ import { LOG_LEVEL } from '../../util/LOG_LEVEL.ts';
 							res: ServerResponse,
 						): ReqId => {
 							const cId =
-								LibUtilitiesConstants.headers.correlationId;
-							const rId = LibUtilitiesConstants.headers.requestId;
+								RawValueService.libUtilitiesConstants.headers
+									.correlationId;
+							const rId =
+								RawValueService.libUtilitiesConstants.headers
+									.requestId;
 
 							const corId = req.headers[cId]?.toString() ?? v4();
 							const reqId = req.headers[rId]?.toString() ?? v4();
@@ -66,4 +71,4 @@ import { LOG_LEVEL } from '../../util/LOG_LEVEL.ts';
 		AppLoggerService,
 	],
 })
-export class AppLoggerModule { }
+export class AppLoggerModule {}

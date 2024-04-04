@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { path as arp } from 'app-root-path';
-import { AppLoggerService } from '../logger/app-logger.service.ts';
 import { globSync } from 'glob';
+import type { AppLoggerService } from '../../logger/app-logger.service.ts';
 
 @Injectable()
 export class PathsService {
-	constructor() {
+	private constructor() {
 		// Example output: [ 'package.json', 'src/services/paths/package.json' ]
 		const allProjectPackageJson = globSync('**/package.json', {
 			ignore: 'node_modules/**',
@@ -38,7 +38,10 @@ export class PathsService {
 	public productPath: string;
 	public libPaths: string[];
 
-	public get paths(): { n: string; p: string }[] {
+	public get paths(): { 
+		n: string; 
+		p: string 
+	} [] {
 		return [
 			{
 				n: 'productPath',
@@ -73,7 +76,7 @@ export class PathsService {
 				p: __filename,
 			},
 			...this.libPaths.map((p, i) => {
-				let n = `libPaths[${i}]`;
+				const n = `libPaths[${i}]`;
 				return {
 					n,
 					p,

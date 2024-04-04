@@ -1,8 +1,8 @@
 import { repl } from '@nestjs/core';
-import { LibUtilitiesModule } from '../lib-utilities.module';
+import { PackageModule } from '../services/package/package.module.ts';
 
 async function replTest() {
-	await repl(LibUtilitiesModule);
+	await repl(PackageModule);
 }
 
 replTest();

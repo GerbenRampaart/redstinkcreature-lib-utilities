@@ -1,4 +1,4 @@
-import { processEnvValueOrDefault } from './processEnvValueOrDefault';
+import { processEnvValueOrDefault } from './processEnvValueOrDefault.ts';
 
 // TODO: it's a bit infuriating I can't re-use the array values here. But at least they are isolated.
 // The story: zod.enum() needs a literal string array and not a dynamic one. However I do need the dynamic

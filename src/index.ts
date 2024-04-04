@@ -1,1 +1,1 @@
-export * from './lib-utilities.module.ts';
+console.log('Hello, world!');

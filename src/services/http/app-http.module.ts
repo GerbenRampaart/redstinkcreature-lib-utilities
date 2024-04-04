@@ -18,4 +18,4 @@ import { AppLoggerModule } from '../logger/app-logger.module.ts';
 		AppHttpService,
 	],
 })
-export class AppHttpModule { }
+export class AppHttpModule {}

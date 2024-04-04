@@ -1,18 +1,21 @@
 import { Module } from '@nestjs/common';
+import { RawValueService } from './raw/raw-value.service.ts';
+import { PathsService } from './paths/paths.service.ts';
 
 /**
  * The misc module CAN NOT have outside dependencies.
- * All services provided here either need no dependencies or depend on each other.
  */
 @Module({
 	imports: [
 		// KEEP EMPTY !!!!
 	],
 	providers: [
-		AppLoggerService,
+		RawValueService,
+		PathsService,
 	],
 	exports: [
-		AppLoggerService,
+		RawValueService,
+		PathsService,
 	],
 })
-export class AppLoggerModule { }
+export class MiscModule {}

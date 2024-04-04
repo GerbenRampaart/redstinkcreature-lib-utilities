@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { existsSync, readFileSync } from 'node:fs';
-import { type PackagesType } from './PackageJsonContext.ts';
-import { PathsService } from '../paths/paths.service.ts';
+import { type PackagesType } from './PackageContext.ts';
 import { type PackageJson } from 'type-fest';
+import type { PathsService } from '../misc/paths/paths.service.ts';
 
 @Injectable()
 export class AppPackageJsonService {

@@ -1,14 +1,14 @@
 import { Module, type OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppLoggerService } from './services/logger/app-logger.service.ts';
-import { AppPackageJsonService } from './services/package/packageJson.service.ts';
-import { PathsService } from './services/paths/paths.service.ts';
 import { AppConfigModule } from './services/config/app-config.module.ts';
 import { AppConfigService } from './services/config/app-config.service.ts';
-import { z } from 'zod';
+import { AppPackageJsonService } from './services/package/package.service.ts';
+import { PathsService } from './services/misc/paths/paths.service.ts';
+import { type IAppConfigModuleOptions } from './services/config/app-config-module.options.ts';
 
-export type LibUtilitiesOptions<TSchema extends z.ZodRawShape> = {
-	schema?: z.ZodObject<TSchema>;
+export type LibUtilitiesOptions = {
+	config?: IAppConfigModuleOptions;
 };
 
 /**
@@ -28,13 +28,13 @@ export type LibUtilitiesOptions<TSchema extends z.ZodRawShape> = {
  */
 @Module({})
 export class LibUtilitiesModule implements OnModuleInit {
-	public static async registerAsync<TSchema extends z.ZodRawShape = {}>(
-		options?: LibUtilitiesOptions<TSchema>,
+	public static async registerAsync(
+		options?: LibUtilitiesOptions,
 	) {
 		return {
 			module: LibUtilitiesModule,
 			imports: [
-				AppConfigModule.registerAsync(options?.schema),
+				AppConfigModule.registerAsync(options?.config),
 			],
 			providers: [
 				ConfigService,
@@ -58,7 +58,7 @@ export class LibUtilitiesModule implements OnModuleInit {
 	) {
 	}
 
-	async onModuleInit() {
+ 	onModuleInit() {
 		this.l.info(
 			`Loaded package.json ${this.pj.product.pj.name}:${this.pj.product.pj.version}`,
 		);

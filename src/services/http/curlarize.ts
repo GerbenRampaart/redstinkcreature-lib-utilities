@@ -15,8 +15,8 @@ export class CurlHelper {
 		let curlHeaders = '';
 
 		if (this.cfg.headers) {
-			for (let property in this.cfg.headers) {
-				let header = `${property}:${this.cfg.headers[property]}`;
+			for (const property in this.cfg.headers) {
+				const header = `${property}:${this.cfg.headers[property]}`;
 				curlHeaders = `${curlHeaders} -H "${header}"`;
 			}
 		}
@@ -41,9 +41,9 @@ export class CurlHelper {
 			}" ${this.getHeaders()} ${this.getBody()}`
 				.trim()
 				.replace(/\s{2,}/g, ' ');
-		} catch (err: any) {
+		} catch (err: unknown) {
 			// At no point can the curlarize class ever throw an error.
-			return err.message ? err.message : 'unknown error';
+			return String(err);
 		}
 	}
 }

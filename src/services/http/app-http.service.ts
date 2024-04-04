@@ -12,7 +12,7 @@ import {
 	type InternalAxiosRequestConfigWithMetadata,
 	type Metadata,
 } from './AxiosRequestConfigWithMetadata.ts';
-import { LibUtilitiesConstants } from '../../util/LibUtilitiesConstants.ts';
+import { RawValueService } from '../misc/raw/raw-value.service.ts';
 
 @Injectable({
 	// Transient providers are not shared across consumers.
@@ -33,7 +33,7 @@ export class AppHttpService {
 		);
 
 		http.axiosRef.interceptors.request.use(
-			(cfg: InternalAxiosRequestConfigWithMetadata<any>) => {
+			(cfg: InternalAxiosRequestConfigWithMetadata<unknown>) => {
 				cfg.metadata = cfg.metadata || {};
 				cfg.metadata.start = process.hrtime();
 				cfg.metadata.startDate = new Date();
@@ -55,7 +55,7 @@ export class AppHttpService {
 
 		http.axiosRef.interceptors.response.use((res) => {
 			const cfg = res.config as InternalAxiosRequestConfigWithMetadata<
-				any
+				unknown
 			>;
 			cfg.metadata = cfg.metadata || {};
 			cfg.metadata.endDate = new Date();
@@ -80,14 +80,15 @@ export class AppHttpService {
 		*/
 				cfg.metadata.elapsed = Math.round(
 					(cfg.metadata.end[0] * 1e3) +
-					(cfg.metadata.end[1] * 1e-6),
+						(cfg.metadata.end[1] * 1e-6),
 				);
 			}
 
 			this.setContext(cfg.metadata, res);
 
-			res.headers[LibUtilitiesConstants.headers.responseTime] =
-				cfg.metadata.elapsed;
+			res.headers[
+				RawValueService.libUtilitiesConstants.headers.responseTime
+			] = cfg.metadata.elapsed;
 
 			// Note that startDate and endDate are not as precise as the elapsed time.
 			l.log({
@@ -106,14 +107,17 @@ export class AppHttpService {
 		});
 	}
 
-	private setContext(m: Metadata, ctx: { headers: Record<string, any> }) {
+	private setContext(m: Metadata, ctx: { headers: Record<string, unknown> }) {
 		if (m.correlationId) {
-			ctx.headers[LibUtilitiesConstants.headers.correlationId] =
-				m.correlationId;
+			ctx.headers[
+				RawValueService.libUtilitiesConstants.headers.correlationId
+			] = m.correlationId;
 		}
 
 		if (m.requestId) {
-			ctx.headers[LibUtilitiesConstants.headers.requestId] = m.requestId;
+			ctx.headers[
+				RawValueService.libUtilitiesConstants.headers.requestId
+			] = m.requestId;
 		}
 	}
 
