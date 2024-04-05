@@ -12,7 +12,7 @@ import {
 	type InternalAxiosRequestConfigWithMetadata,
 	type Metadata,
 } from './AxiosRequestConfigWithMetadata.ts';
-import { RawValueService } from '../misc/raw/raw-value.service.ts';
+import { RawValueService } from '../static/raw-value.service.ts';
 
 @Injectable({
 	// Transient providers are not shared across consumers.

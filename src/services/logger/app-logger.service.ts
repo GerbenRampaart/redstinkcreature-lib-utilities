@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { type Params, PARAMS_PROVIDER_TOKEN, PinoLogger } from 'nestjs-pino';
 import { type LevelWithSilent } from 'pino';
-import { RawValueService } from '../misc/raw/raw-value.service.ts';
+import { RawValueService } from '../static/raw-value.service.ts';
 
 @Injectable()
 export class AppLoggerService extends PinoLogger {

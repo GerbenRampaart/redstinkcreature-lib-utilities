@@ -32,10 +32,17 @@ describe('AppConfigService', () => {
 	});
 
 	it('should be bla', () => {
+		// FROM default value out provided zod schema (top of this code file).
 		expect(service.get('TEST')).toBe('bla');
 	});
 
 	it('should be info', () => {
-		expect(service.get('LOG_LEVEL')).toBe('info');
+		// FROM .env.test
+		expect(service.get('LOG_LEVEL')).toBe('debug');
+	});
+
+	it('should be info', () => {
+		// FROM .env.test
+		expect(service.get('NODE_ENV')).toBe('test');
 	});
 });

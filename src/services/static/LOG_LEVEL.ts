@@ -30,7 +30,7 @@ export const levelsArray: string[] = [
 
 // So this is just safe code.
 // Things like LOG_LEVEL and NODE_ENV are so low-level I want some access to defaults without
-// having any higher level code initiliazed like nestjs modules.
+// having any higher level code initialized like nestjs modules.
 export const LOG_LEVEL = function (): string {
 	return processEnvValueOrDefault(
 		'LOG_LEVEL',

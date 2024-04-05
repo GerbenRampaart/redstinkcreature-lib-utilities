@@ -2,7 +2,7 @@ import { levelsArray, LOG_LEVEL } from './LOG_LEVEL.ts';
 import { envsArray, NODE_ENV } from './NODE_ENV.ts';
 
 export class RawValueService {
-	constructor() {
+	private constructor() {
 	}
 
 	public static readonly rawLogLevel: string = LOG_LEVEL();

@@ -11,7 +11,7 @@ import { join } from 'node:path';
 import { type IAppConfigModuleOptions } from './app-config-module.options.ts';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
-import { RawValueService } from '../misc/raw/raw-value.service.ts';
+import { RawValueService } from '../static/raw-value.service.ts';
 
 @Module({})
 export class AppConfigModule {
@@ -24,9 +24,13 @@ export class AppConfigModule {
 				AppLoggerModule,
 				ConfigModule.forRoot({
 					validate: (env) => {
-						env = options?.schema?.parse(env) ?? env;
 						console.log(env);
-						env = UtilitiesSchema.parse(env);
+						if (options?.schema) {
+							UtilitiesSchema.merge(options.schema);
+						}
+						//env = options?.schema?.parse(env) ?? env;
+
+						//env = UtilitiesSchema.parse(env);
 						console.log(env);
 						return env;
 					},
@@ -52,6 +56,10 @@ export class AppConfigModule {
 					> => {
 						const env = RawValueService.rawNodeEnv;
 						const de = await glob(join(path, `.env.${env}`));
+
+						if (!de) {
+							throw new Error(`No .env file found for environment.`);
+						}
 
 						l.info(
 							`Found .env file for environment ${env} at ${de}.`,

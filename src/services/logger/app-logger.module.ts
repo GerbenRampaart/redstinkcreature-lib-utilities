@@ -6,7 +6,7 @@ import { type ReqId } from 'pino-http';
 import { v4 } from 'uuid';
 import { type PrettyOptions } from 'pino-pretty';
 import { AppPackageJsonService } from '../package/package.service.ts';
-import { RawValueService } from '../misc/index.ts';
+import { RawValueService } from '../static/raw-value.service.ts';
 import { PackageModule } from '../package/package.module.ts';
 
 @Module({

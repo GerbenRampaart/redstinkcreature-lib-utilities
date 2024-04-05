@@ -6,12 +6,13 @@ import { AppLoggerModule } from '../logger/app-logger.module.ts';
 
 @Module({
 	imports: [
-		HttpModule.register({}),
-		forwardRef(() => AppLoggerModule),
+		HttpModule.register({
+
+		}),
+		AppLoggerModule,
 	],
 	providers: [
 		AppLoggerService,
-		HttpService,
 		AppHttpService,
 	],
 	exports: [

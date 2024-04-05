@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { path as arp } from 'app-root-path';
 import { globSync } from 'glob';
-import type { AppLoggerService } from '../../logger/app-logger.service.ts';
+import type { AppLoggerService } from '../logger/app-logger.service.ts';
 
 @Injectable()
 export class PathsService {
-	private constructor() {
+	constructor() {
 		// Example output: [ 'package.json', 'src/services/paths/package.json' ]
 		const allProjectPackageJson = globSync('**/package.json', {
 			ignore: 'node_modules/**',
