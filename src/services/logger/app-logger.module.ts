@@ -6,8 +6,9 @@ import { type ReqId } from 'pino-http';
 import { v4 } from 'uuid';
 import { type PrettyOptions } from 'pino-pretty';
 import { AppPackageJsonService } from '../package/package.service.ts';
-import { RawValueService } from '../static/raw-value.service.ts';
 import { PackageModule } from '../package/package.module.ts';
+import { AppConfigService } from '../config/app-config.service.ts';
+import { AppConstantsService } from '../constants/app-constants.service.ts';
 
 @Module({
 	imports: [
@@ -29,9 +30,9 @@ import { PackageModule } from '../package/package.module.ts';
 
 				return {
 					pinoHttp: {
-						level: RawValueService.rawLogLevel,
+						level: AppConstantsService.rawLogLevel,
 						name: `${pj.product.pj.name}:${pj.product.pj.version}`,
-						transport: RawValueService.nodeEnv.isDebug
+						transport: AppConstantsService.nodeEnv.isDebug
 							? {
 								target: 'pino-pretty',
 								options,
@@ -42,10 +43,10 @@ import { PackageModule } from '../package/package.module.ts';
 							res: ServerResponse,
 						): ReqId => {
 							const cId =
-								RawValueService.libUtilitiesConstants.headers
+							AppConstantsService.libUtilitiesConstants.headers
 									.correlationId;
 							const rId =
-								RawValueService.libUtilitiesConstants.headers
+							AppConstantsService.libUtilitiesConstants.headers
 									.requestId;
 
 							const corId = req.headers[cId]?.toString() ?? v4();
@@ -71,4 +72,4 @@ import { PackageModule } from '../package/package.module.ts';
 		AppLoggerService,
 	],
 })
-export class AppLoggerModule {}
+export class AppLoggerModule { }

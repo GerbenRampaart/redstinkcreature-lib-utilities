@@ -12,7 +12,7 @@ import {
 	type InternalAxiosRequestConfigWithMetadata,
 	type Metadata,
 } from './AxiosRequestConfigWithMetadata.ts';
-import { RawValueService } from '../static/raw-value.service.ts';
+import { AppConstantsService } from '../constants/app-constants.service.ts';
 
 @Injectable({
 	// Transient providers are not shared across consumers.
@@ -80,14 +80,14 @@ export class AppHttpService {
 		*/
 				cfg.metadata.elapsed = Math.round(
 					(cfg.metadata.end[0] * 1e3) +
-						(cfg.metadata.end[1] * 1e-6),
+					(cfg.metadata.end[1] * 1e-6),
 				);
 			}
 
 			this.setContext(cfg.metadata, res);
 
 			res.headers[
-				RawValueService.libUtilitiesConstants.headers.responseTime
+				AppConstantsService.libUtilitiesConstants.headers.responseTime
 			] = cfg.metadata.elapsed;
 
 			// Note that startDate and endDate are not as precise as the elapsed time.
@@ -110,13 +110,13 @@ export class AppHttpService {
 	private setContext(m: Metadata, ctx: { headers: Record<string, unknown> }) {
 		if (m.correlationId) {
 			ctx.headers[
-				RawValueService.libUtilitiesConstants.headers.correlationId
+				AppConstantsService.libUtilitiesConstants.headers.correlationId
 			] = m.correlationId;
 		}
 
 		if (m.requestId) {
 			ctx.headers[
-				RawValueService.libUtilitiesConstants.headers.requestId
+				AppConstantsService.libUtilitiesConstants.headers.requestId
 			] = m.requestId;
 		}
 	}

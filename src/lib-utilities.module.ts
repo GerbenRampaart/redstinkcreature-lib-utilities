@@ -4,8 +4,8 @@ import { AppLoggerService } from './services/logger/app-logger.service.ts';
 import { AppConfigModule } from './services/config/app-config.module.ts';
 import { AppConfigService } from './services/config/app-config.service.ts';
 import { AppPackageJsonService } from './services/package/package.service.ts';
-import { PathsService } from './services/misc/paths/paths.service.ts';
 import { type IAppConfigModuleOptions } from './services/config/app-config-module.options.ts';
+import { PathsService } from './services/paths/paths.service.ts';
 
 export type LibUtilitiesOptions = {
 	config?: IAppConfigModuleOptions;
@@ -44,7 +44,6 @@ export class LibUtilitiesModule implements OnModuleInit {
 				PathsService,
 			],
 			exports: [
-				ConfigService,
 				AppConfigService,
 				AppLoggerService,
 				AppPackageJsonService,

@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppConfigService } from './app-config.service.ts';
 import { AppConfigModule } from './app-config.module.ts';
 import { z } from 'zod';
-import type { UtilitiesSchemaType } from './app-config.schema.ts';
 
 describe('AppConfigService', () => {
 	const appSchema = z.object({
@@ -10,7 +9,7 @@ describe('AppConfigService', () => {
 	});
 
 	type AppSchemaType = z.infer<typeof appSchema>;
-	let service: AppConfigService<AppSchemaType & UtilitiesSchemaType>;
+	let service: AppConfigService<AppSchemaType>;
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -36,13 +35,13 @@ describe('AppConfigService', () => {
 		expect(service.get('TEST')).toBe('bla');
 	});
 
-	it('should be info', () => {
+	it('should be debug', () => {
 		// FROM .env.test
-		expect(service.get('LOG_LEVEL')).toBe('debug');
+		expect(service.LOG_LEVEL).toBe('debug');
 	});
 
 	it('should be info', () => {
 		// FROM .env.test
-		expect(service.get('NODE_ENV')).toBe('test');
+		expect(service.NODE_ENV).toBe('test');
 	});
 });

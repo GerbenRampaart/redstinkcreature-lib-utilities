@@ -1,12 +1,9 @@
 import { levelsArray, LOG_LEVEL } from './LOG_LEVEL.ts';
 import { envsArray, NODE_ENV } from './NODE_ENV.ts';
 
-export class RawValueService {
-	private constructor() {
-	}
-
-	public static readonly rawLogLevel: string = LOG_LEVEL();
-	public static readonly rawNodeEnv: string = NODE_ENV();
+export class AppConstantsService {
+	public static rawLogLevel = LOG_LEVEL();
+	public static rawNodeEnv = NODE_ENV();
 
 	public static get libUtilitiesConstants() {
 		return {
@@ -33,11 +30,11 @@ export class RawValueService {
 		const isRepl = this.rawLogLevel === 'repl';
 
 		return {
-			isDevelopment,
-			isProduction,
-			isRepl,
 			isTest,
-			isDebug: isTest || isDevelopment || isRepl,
-		} as const;
+			isProduction,
+			isDevelopment,
+			isRepl,
+			isDebug: isRepl || isDevelopment || isTest
+		};
 	}
 }
