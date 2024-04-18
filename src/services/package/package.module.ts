@@ -3,8 +3,7 @@ import { AppPackageJsonService } from './package.service.ts';
 import { PathsService } from '../paths/paths.service.ts';
 
 @Module({
-	imports: [
-	],
+	imports: [],
 	providers: [
 		PathsService,
 		AppPackageJsonService,

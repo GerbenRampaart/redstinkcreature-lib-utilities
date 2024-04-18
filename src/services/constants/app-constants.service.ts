@@ -24,17 +24,17 @@ export class AppConstantsService {
 	}
 
 	public static get nodeEnv() {
-		const isTest = this.rawLogLevel === 'test';
-		const isProduction = this.rawLogLevel === 'production';
-		const isDevelopment = this.rawLogLevel === 'development';
-		const isRepl = this.rawLogLevel === 'repl';
+		const isTest = this.rawNodeEnv === 'test';
+		const isProduction = this.rawNodeEnv === 'production';
+		const isDevelopment = this.rawNodeEnv === 'development';
+		const isRepl = this.rawNodeEnv === 'repl';
 
 		return {
 			isTest,
 			isProduction,
 			isDevelopment,
 			isRepl,
-			isDebug: isRepl || isDevelopment || isTest
+			isDebug: isRepl || isDevelopment || isTest,
 		};
 	}
 }

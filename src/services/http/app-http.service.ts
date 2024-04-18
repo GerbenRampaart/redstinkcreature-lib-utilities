@@ -80,7 +80,7 @@ export class AppHttpService {
 		*/
 				cfg.metadata.elapsed = Math.round(
 					(cfg.metadata.end[0] * 1e3) +
-					(cfg.metadata.end[1] * 1e-6),
+						(cfg.metadata.end[1] * 1e-6),
 				);
 			}
 

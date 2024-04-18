@@ -15,7 +15,8 @@ export class AppLoggerService extends PinoLogger {
 	public set level(lvl: string) {
 		if (!AppConstantsService.validLogLevels.includes(lvl)) {
 			throw new Error(
-				`Tried to set LogLevel ${lvl}. Supported levels: ${AppConstantsService.validLogLevels.join(', ')
+				`Tried to set LogLevel ${lvl}. Supported levels: ${
+					AppConstantsService.validLogLevels.join(', ')
 				}`,
 			);
 		}
@@ -31,7 +32,11 @@ export class AppLoggerService extends PinoLogger {
 	 * We used to use Winston which had a log() instead of Pino's info().
 	 * So this is purely for backwards compat reasons and does the same thing as info()
 	 */
-	public log(obj: unknown, msg?: string | undefined, ...args: unknown[]): void {
+	public log(
+		obj: unknown,
+		msg?: string | undefined,
+		...args: unknown[]
+	): void {
 		this.info(obj, msg, ...args);
 	}
 }

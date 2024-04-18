@@ -4,11 +4,11 @@ import { AppLoggerService } from './services/logger/app-logger.service.ts';
 import { AppConfigModule } from './services/config/app-config.module.ts';
 import { AppConfigService } from './services/config/app-config.service.ts';
 import { AppPackageJsonService } from './services/package/package.service.ts';
-import { type IAppConfigModuleOptions } from './services/config/app-config-module.options.ts';
+import { type AppConfigModuleOptions } from './services/config/app-config-module.options.ts';
 import { PathsService } from './services/paths/paths.service.ts';
 
 export type LibUtilitiesOptions = {
-	config?: IAppConfigModuleOptions;
+	config?: AppConfigModuleOptions;
 };
 
 /**
@@ -28,7 +28,7 @@ export type LibUtilitiesOptions = {
  */
 @Module({})
 export class LibUtilitiesModule implements OnModuleInit {
-	public static async registerAsync(
+	public static register(
 		options?: LibUtilitiesOptions,
 	) {
 		return {
@@ -57,7 +57,7 @@ export class LibUtilitiesModule implements OnModuleInit {
 	) {
 	}
 
- 	onModuleInit() {
+	onModuleInit() {
 		this.l.info(
 			`Loaded package.json ${this.pj.product.pj.name}:${this.pj.product.pj.version}`,
 		);

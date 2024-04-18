@@ -6,9 +6,7 @@ import { AppLoggerModule } from '../logger/app-logger.module.ts';
 
 @Module({
 	imports: [
-		HttpModule.register({
-
-		}),
+		HttpModule.register({}),
 		AppLoggerModule,
 	],
 	providers: [

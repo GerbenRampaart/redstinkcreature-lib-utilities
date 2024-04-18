@@ -38,10 +38,10 @@ export class PathsService {
 	public productPath: string;
 	public libPaths: string[];
 
-	public get paths(): { 
-		n: string; 
-		p: string 
-	} [] {
+	public get paths(): {
+		n: string;
+		p: string;
+	}[] {
 		return [
 			{
 				n: 'productPath',

@@ -2,6 +2,7 @@ import { AxiosError, type AxiosResponse } from 'axios';
 import type { AxiosRequestConfigWithMetadata } from './AxiosRequestConfigWithMetadata';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { CurlHelper } from '.';
+import { z } from 'zod';
 
 /*
 
@@ -17,8 +18,8 @@ import { CurlHelper } from '.';
 | ERR_CANCELED | Feature or method is canceled explicitly by the user.
 | ERR_NOT_SUPPORT | Feature or method not supported in the current axios environment.
 | ERR_INVALID_URL | Invalid URL provided for axios request.
-
 */
+
 export class HttpResult<TResponseType, TBodyType = unknown> {
 	constructor(
 		public cfg: AxiosRequestConfigWithMetadata<TBodyType>,
@@ -27,12 +28,12 @@ export class HttpResult<TResponseType, TBodyType = unknown> {
 	) {
 	}
 
-	public get timedOut() {
+	public get timedOut(): boolean {
 		return this.error?.code === 'ETIMEDOUT' ||
 			this.error?.code === 'ECONNABORTED';
 	}
 
-	public get canceled() {
+	public get canceled(): boolean {
 		return this.error?.code === 'ERR_CANCELED';
 	}
 
@@ -60,10 +61,9 @@ export class HttpResult<TResponseType, TBodyType = unknown> {
 	 * }
 	 */
 	public get ok() {
-		return (this.response !== undefined &&
+		return (this.response && !this.error &&
 			this.response.status >= 200 &&
-			this.response.status < 300 &&
-			this.error === undefined);
+			this.response.status < 300);
 	}
 
 	/**
@@ -83,7 +83,7 @@ export class HttpResult<TResponseType, TBodyType = unknown> {
 	 *
 	 * @param forceStatus (optional)
 	 * Override the status in the thrown HttpException with your own status. If not
-	 * supplied, the function will try to get the http status from axiosResult.error.response.status,
+	 * supplied, the function will try to get the http status from axiosResult.error.status,
 	 * (essentialy re-throwing the http status the api you called returned), if not available, it
 	 * defaults to 500.
 	 *
@@ -94,13 +94,29 @@ export class HttpResult<TResponseType, TBodyType = unknown> {
 		forceStatus?: HttpStatus,
 		forceMessage?: string,
 	): void {
-		if (!this.ok && this.error) {
-			const status = forceStatus ?? this.error?.response?.status ?? 500;
-			const msg = forceMessage ?? this.error?.toJSON() ??
+		if (this.error) {
+			const status = forceStatus ?? this.error.status ?? 500;
+			const msg = forceMessage ?? this.error.message ??
 				'Unhandled exception';
 			throw new HttpException(msg, status, {
-				cause: this.error,
+				cause: this.error.toJSON(),
 			});
+		}
+	}
+
+	public throwIfNotValid(
+		schema: z.ZodObject<any>,
+		status: HttpStatus,
+		forceMessage?: string,
+	) {
+		this.throwHttpExceptionIfError(status, forceMessage);
+		const result = schema.safeParse(this.response!.data);
+
+		if (!result.success) {
+			throw new HttpException(
+				forceMessage ?? result.error.issues,
+				status,
+			);
 		}
 	}
 }

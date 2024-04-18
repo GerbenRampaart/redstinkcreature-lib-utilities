@@ -7,7 +7,6 @@ import { v4 } from 'uuid';
 import { type PrettyOptions } from 'pino-pretty';
 import { AppPackageJsonService } from '../package/package.service.ts';
 import { PackageModule } from '../package/package.module.ts';
-import { AppConfigService } from '../config/app-config.service.ts';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 
 @Module({
@@ -19,7 +18,7 @@ import { AppConstantsService } from '../constants/app-constants.service.ts';
 			inject: [
 				AppPackageJsonService,
 			],
-			useFactory: async (
+			useFactory: (
 				pj: AppPackageJsonService,
 			) => {
 				// https://github.com/pinojs/pino-pretty#options
@@ -43,10 +42,12 @@ import { AppConstantsService } from '../constants/app-constants.service.ts';
 							res: ServerResponse,
 						): ReqId => {
 							const cId =
-							AppConstantsService.libUtilitiesConstants.headers
+								AppConstantsService.libUtilitiesConstants
+									.headers
 									.correlationId;
 							const rId =
-							AppConstantsService.libUtilitiesConstants.headers
+								AppConstantsService.libUtilitiesConstants
+									.headers
 									.requestId;
 
 							const corId = req.headers[cId]?.toString() ?? v4();
@@ -72,4 +73,4 @@ import { AppConstantsService } from '../constants/app-constants.service.ts';
 		AppLoggerService,
 	],
 })
-export class AppLoggerModule { }
+export class AppLoggerModule {}
