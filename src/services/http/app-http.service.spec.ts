@@ -15,7 +15,7 @@ describe('AppHttpService', () => {
 			],
 		}).compile();
 
-		service = await module.resolve<AppHttpService>(AppHttpService);
+		service = module.get<AppHttpService>(AppHttpService);
 	});
 
 	it('should be defined', () => {

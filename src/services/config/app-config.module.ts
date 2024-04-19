@@ -1,11 +1,11 @@
-import { type DynamicModule, Module, OnModuleInit } from '@nestjs/common';
+import { type DynamicModule, Module, type OnModuleInit } from '@nestjs/common';
 import { AppConfigService } from './app-config.service.ts';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { glob } from 'glob';
 import { path as arp } from 'app-root-path';
 import {
-	AppConfigModuleOptions,
-	ProcessEnv,
+	type AppConfigModuleOptions,
+	type ProcessEnv,
 } from './app-config-module.options.ts';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
@@ -61,29 +61,34 @@ export class AppConfigModule implements OnModuleInit {
 			fullDotEnvPath = join(arp, de[0]);
 		}
 
-		let beforeValidate: Record<string, unknown> = {};
-		let afterValidate: Record<string, unknown> = {};
+		let before: Record<string, unknown> = {};
+		let after: Record<string, unknown> = {};
+		let error: Zod.ZodError<{ [x: string]: any; }> | undefined = undefined;
 
 		return {
 			module: AppConfigModule,
 			imports: [
 				AppLoggerModule,
 				ConfigModule.forRoot({
-					validate: (env) => {
-						beforeValidate = env;
+					load: [
+						() => {
+							before = process.env;
+							after = before;
 
-						if (options?.schema) {
-							afterValidate = options.schema.parse(env);
-							return afterValidate;
+							if (options?.schema) {
+								const result = options.schema.safeParse(before);
+
+								if (result.success) {
+									after = result.data;
+								} else {
+									error = result.error
+								}
+							}
+							console.log(after)
+							return after;
 						}
-
-						return beforeValidate;
-					},
+					],
 					isGlobal: true,
-					validationOptions: {
-						allowUnknown: true,
-						abortEarly: false, // output all errors
-					},
 					envFilePath: fullDotEnvPath,
 					ignoreEnvFile: !AppConstantsService.nodeEnv.isDebug,
 					cache: true,
@@ -96,16 +101,15 @@ export class AppConfigModule implements OnModuleInit {
 					): AppConfigService<
 						TSchema
 					> => {
-						c.setEnvFilePaths(de);
-
 						return new AppConfigService<
 							TSchema
 						>(
 							c,
-							beforeValidate,
-							afterValidate,
+							before,
+							after,
 							fullDotEnvPath,
 							options?.schema,
+							error
 						);
 					},
 					provide: AppConfigService,

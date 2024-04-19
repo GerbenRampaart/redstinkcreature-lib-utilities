@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppLoggerService } from './app-logger.service.ts';
 import { LoggerModule } from 'nestjs-pino';
-import { IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage, ServerResponse } from 'node:http';
 import { type ReqId } from 'pino-http';
 import { v4 } from 'uuid';
 import { type PrettyOptions } from 'pino-pretty';

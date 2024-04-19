@@ -5,10 +5,11 @@ import { z } from 'zod';
 
 describe('AppConfigService', () => {
 	const appSchema = z.object({
-		TEST: z.string().optional().default('bla'),
-		TEST_NUMBER: z.number().optional().default(123),
-		UNDEFINED: z.number(),
+		TEST: z.string().default('bla'),
+		TEST_NUMBER: z.number().default(123),
+		UNDEFINED: z.string().optional(),
 		TEST_NULLABLE_NUMBER: z.number().optional(),
+		MY_TEST_VALUE: z.string().optional(), // set by .env.test
 	});
 
 	type AppSchemaType = z.infer<typeof appSchema>;
@@ -38,12 +39,12 @@ describe('AppConfigService', () => {
 		expect(service.get('TEST')).toBe('bla');
 	});
 
-	it('should be 123', () => {
+	it('should be 123 because it was optional and defaulted to string "123" and then transformed to a number', () => {
 		// FROM default value out provided zod schema (top of this code file).
 		expect(service.get('TEST_NUMBER')).toBe(123);
 	});
 
-	it('should be 123', () => {
+	it('should be undefined because is was optional', () => {
 		// FROM default value out provided zod schema (top of this code file).
 		expect(service.get('TEST_NULLABLE_NUMBER')).toBe(undefined);
 	});
@@ -64,6 +65,11 @@ describe('AppConfigService', () => {
 	});
 
 	it('should be info', () => {
+		// FROM .env.test
+		expect(service.NODE_ENV).toBe('test');
+	});
+
+	it('should be 456', () => {
 		// FROM .env.test
 		expect(service.NODE_ENV).toBe('test');
 	});

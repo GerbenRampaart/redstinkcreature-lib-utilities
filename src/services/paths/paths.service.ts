@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { path as arp } from 'app-root-path';
 import { globSync } from 'glob';
 import type { AppLoggerService } from '../logger/app-logger.service.ts';
+import { homedir } from 'node:os';
 
 @Injectable()
 export class PathsService {
@@ -12,12 +13,12 @@ export class PathsService {
 			cwd: arp,
 		});
 
-		// We see the root package.json as the product package.json.
-		// If that doesn't exist we're very confused.
 		const productPackageJson = allProjectPackageJson.find((p) =>
 			p === 'package.json'
 		);
 
+		// We see the root package.json as the product package.json.
+		// If that doesn't exist we're very confused.
 		if (!productPackageJson) {
 			throw new Error(
 				`No product package.json found in the project root. cwd was ${process.cwd()}`,
@@ -74,6 +75,10 @@ export class PathsService {
 			{
 				n: '__filename',
 				p: __filename,
+			},
+			{
+				n: 'home',
+				p: homedir(),
 			},
 			...this.libPaths.map((p, i) => {
 				const n = `libPaths[${i}]`;

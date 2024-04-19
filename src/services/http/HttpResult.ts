@@ -1,7 +1,7 @@
 import { AxiosError, type AxiosResponse } from 'axios';
-import type { AxiosRequestConfigWithMetadata } from './AxiosRequestConfigWithMetadata';
+import { type AxiosRequestConfigWithMetadata } from './AxiosRequestConfigWithMetadata.ts';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { CurlHelper } from '.';
+import { CurlHelper } from './curlarize.ts';
 import { z } from 'zod';
 
 /*
