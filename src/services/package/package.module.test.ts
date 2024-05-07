@@ -10,7 +10,6 @@ describe('PackageModule', () => {
 			imports: [
 				PackageModule,
 			],
-			providers: [],
 		}).compile();
 
 		service = module.get<AppPackageJsonService>(AppPackageJsonService);

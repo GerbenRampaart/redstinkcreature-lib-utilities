@@ -1,28 +1,33 @@
-import { Injectable, Optional } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
-import { type ProcessEnv, type ProcessEnvZod } from './app-config-module.options.ts';
+import {
+	type ProcessEnv,
+	type ProcessEnvZod,
+} from './app-config-module.options.ts';
 
 @Injectable()
 export class AppConfigService<TSchema extends ProcessEnv> {
 	constructor(
-		private readonly cfg: ConfigService<TSchema, true>,
-		@Optional() public readonly beforeValidate: Record<string, unknown>,
-		@Optional() public readonly afterValidate: Record<string, unknown>,
-		@Optional() public readonly fullDotEnvPath?: string,
-		@Optional() public readonly schema?: ProcessEnvZod,
-		@Optional() public readonly validationError?: Zod.ZodError<{ [x: string]: any; }>,
+		@Inject('PROCESS_ENV') processEnv: Record<string, string | undefined>,
+		//public readonly fullDotEnvPath?: string,
+		//public readonly schema?: ProcessEnvZod,
 	) {
+		Object.keys(processEnv).forEach((key) => {
+			this.pe.push({
+				n: key,
+				v: processEnv[key],
+			});
+		});
 	}
 
+	private pe: { n: string; v: string | undefined }[] = [];
+
 	get<T extends keyof TSchema>(key: T) {
-		const val: TSchema | undefined = this.cfg.get<TSchema>(key, { infer: true });
-		if (val === undefined) return undefined;
-		return val[key];
+		return this.pe.find((p) => p.n === key);
 	}
 
 	getOrThrow<T extends keyof TSchema>(key: T) {
-		return this.cfg.getOrThrow<TSchema>(key, { infer: true });
+		return this.pe.find((p) => p.n === key);
 	}
 
 	public get NODE_ENV(): string {
@@ -33,11 +38,11 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 		return AppConstantsService.rawLogLevel;
 	}
 
-	public get keys(): string[] {
+/* 	public get keys(): string[] {
 		if (this.schema) {
 			return Object.keys(this.schema.shape);
 		}
 
 		return [];
-	}
+	} */
 }

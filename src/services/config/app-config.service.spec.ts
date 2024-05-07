@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppConfigService } from './app-config.service.ts';
 import { AppConfigModule } from './app-config.module.ts';
 import { z } from 'zod';
+import { env } from 'bun';
 
 describe('AppConfigService', () => {
 	const appSchema = z.object({
@@ -23,11 +24,11 @@ describe('AppConfigService', () => {
 				}),
 			],
 			providers: [
-				AppConfigService,
+				AppConfigService<AppSchemaType>,
 			],
 		}).compile();
 
-		service = module.get(AppConfigService);
+		service = module.get<AppConfigService<AppSchemaType>>(AppConfigService);
 	});
 
 	it('should be defined', () => {

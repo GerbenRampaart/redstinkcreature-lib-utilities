@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "module": "index.ts",
-  "type": "module",
+
   "scripts": {
     "binary": "bun build ./src/main.ts --compile --target=bun --outfile=./dist/app",
     "build": "bun build ./src/main.ts --sourcemap --target=bun --outfile=./dist/app.js",

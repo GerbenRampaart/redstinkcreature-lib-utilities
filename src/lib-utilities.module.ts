@@ -1,11 +1,11 @@
 import { Module, type OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppLoggerService } from './services/logger/app-logger.service.ts';
-import { AppConfigModule } from './services/config/app-config.module.ts';
 import { AppConfigService } from './services/config/app-config.service.ts';
 import { AppPackageJsonService } from './services/package/package.service.ts';
 import { type AppConfigModuleOptions } from './services/config/app-config-module.options.ts';
 import { PathsService } from './services/paths/paths.service.ts';
+import { AppConfigModule } from './services/config/app-config.module.ts';
 
 export type LibUtilitiesOptions = {
 	config?: AppConfigModuleOptions;
@@ -37,7 +37,6 @@ export class LibUtilitiesModule implements OnModuleInit {
 				AppConfigModule.registerAsync(options?.config),
 			],
 			providers: [
-				ConfigService,
 				AppConfigService,
 				AppPackageJsonService,
 				AppLoggerService,

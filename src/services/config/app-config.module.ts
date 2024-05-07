@@ -1,30 +1,30 @@
 import { type DynamicModule, Module, type OnModuleInit } from '@nestjs/common';
+import { AppConstantsService } from '../constants/app-constants.service.ts';
+import { AppLoggerService } from '../logger/app-logger.service.ts';
+import type {
+	AppConfigModuleOptions,
+	ProcessEnv,
+} from './app-config-module.options.ts';
 import { AppConfigService } from './app-config.service.ts';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { glob } from 'glob';
 import { path as arp } from 'app-root-path';
-import {
-	type AppConfigModuleOptions,
-	type ProcessEnv,
-} from './app-config-module.options.ts';
+import { join } from 'node:path';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
-import { AppLoggerService } from '../logger/app-logger.service.ts';
-import { join } from 'path';
-import { AppConstantsService } from '../constants/app-constants.service.ts';
+import { env } from 'node:process';
 
 @Module({
 	imports: [
 		AppLoggerModule,
-	],
+	]
 })
-export class AppConfigModule implements OnModuleInit {
+export class AppConfigModule {// implements OnModuleInit {
 	constructor(
 		private readonly l: AppLoggerService,
 		private readonly cfg: AppConfigService<ProcessEnv>,
 	) {
 	}
 
-	onModuleInit() {
+/* 	async onModuleInit() {
 		if (this.cfg.fullDotEnvPath) {
 			this.l.info(
 				`Found .env.${AppConstantsService.rawNodeEnv} at ${this.cfg.fullDotEnvPath}`,
@@ -34,7 +34,7 @@ export class AppConfigModule implements OnModuleInit {
 				`No dotenv loaded because env was ${AppConstantsService.rawNodeEnv}`,
 			);
 		}
-	}
+	} */
 
 	public static async registerAsync<TSchema extends ProcessEnv>(
 		options?: AppConfigModuleOptions,
@@ -61,66 +61,26 @@ export class AppConfigModule implements OnModuleInit {
 			fullDotEnvPath = join(arp, de[0]);
 		}
 
-		let before: Record<string, unknown> = {};
-		let after: Record<string, unknown> = {};
-		let error: Zod.ZodError<{ [x: string]: any; }> | undefined = undefined;
-
 		return {
 			module: AppConfigModule,
-			imports: [
-				AppLoggerModule,
-				ConfigModule.forRoot({
-					load: [
-						() => {
-							before = process.env;
-							after = before;
-
-							if (options?.schema) {
-								const result = options.schema.safeParse(before);
-
-								if (result.success) {
-									after = result.data;
-								} else {
-									error = result.error
-								}
-							}
-							console.log(after)
-							return after;
-						}
-					],
-					isGlobal: true,
-					envFilePath: fullDotEnvPath,
-					ignoreEnvFile: !AppConstantsService.nodeEnv.isDebug,
-					cache: true,
-				}),
-			],
 			providers: [
 				{
-					useFactory: (
-						c: ConfigService<TSchema, true>,
-					): AppConfigService<
-						TSchema
-					> => {
-						return new AppConfigService<
-							TSchema
-						>(
-							c,
-							before,
-							after,
-							fullDotEnvPath,
-							options?.schema,
-							error
-						);
-					},
-					provide: AppConfigService,
+					provide: AppConfigService<TSchema>,
 					inject: [
-						ConfigService,
-					],
-				},
+						{
+							name: 'PROCESS_ENV',
+							provide: () => {
+								return env;
+							},
+						},
+					]
+				}
+				,
 			],
+
 			exports: [
-				AppConfigService,
-			],
+				AppConfigService<TSchema>,
+			]
 		};
 	}
 }
