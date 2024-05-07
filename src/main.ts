@@ -1,11 +1,20 @@
+import '@nestjs/platform-express';
 import { NestFactory } from '@nestjs/core';
-import { PackageModule } from './services/package/package.module.ts';
-import { AppPackageJsonService } from './services/package/package.service.ts';
+import { LoggerErrorInterceptor } from 'nestjs-pino';
+import { AppLoggerModule } from './services/logger/app-logger.module.ts';
+import { AppLoggerService } from './services/logger/app-logger.service.ts';
 
 async function bootstrap() {
-	const app = await NestFactory.create(PackageModule);
-	const pj = app.get(AppPackageJsonService);
-	console.log(pj.product.pj.name);
+	const app = await NestFactory.create(AppLoggerModule,
+		{
+			bufferLogs: true,
+		}
+	);
+
+	const l = app.get(AppLoggerService);
+	app.useLogger(l);
+	
+	app.useGlobalInterceptors(new LoggerErrorInterceptor());
 	await app.listen(3000);
 }
 bootstrap();

@@ -1,7 +1,9 @@
-import { AppConstantsService } from './app-constants.service';
+import { assertArrayIncludes } from 'std/assert';
+import { AppConstantsService } from './app-constants.service.ts';
 
-describe('AppConstantsService', () => {
-	it('should contain repl', () => {
-		expect(AppConstantsService.validNodeEnvs).toContain('repl');
-	});
+Deno.test({
+	name: 'AppConstantsService',
+	permissions: {},
+}, () => {
+	assertArrayIncludes<string>(AppConstantsService.validNodeEnvs, ['repl']);
 });

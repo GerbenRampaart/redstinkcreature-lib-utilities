@@ -1,11 +1,9 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
 import { HttpService } from '@nestjs/axios';
-import { type AxiosResponse } from 'axios';
-import { v4 } from 'uuid';
+import { type AxiosResponse, AxiosError } from 'axios';
 import { lastValueFrom } from 'rxjs';
 import { HttpResult } from './HttpResult.ts';
-import { AxiosError } from 'axios';
 import { isNativeError } from 'node:util/types';
 import {
 	type AxiosRequestConfigWithMetadata,
@@ -35,7 +33,7 @@ export class AppHttpService {
 		http.axiosRef.interceptors.request.use(
 			(cfg: InternalAxiosRequestConfigWithMetadata<unknown>) => {
 				cfg.metadata = cfg.metadata || {};
-				cfg.metadata.start = process.hrtime();
+				cfg.metadata.start = Deno.hrtime();
 				cfg.metadata.startDate = new Date();
 
 				l.info({
@@ -123,8 +121,8 @@ export class AppHttpService {
 
 	public async request<TResponseType, TBody>(
 		cfg: AxiosRequestConfigWithMetadata<TBody>,
-		correlationId = v4(),
-		requestId = v4(),
+		correlationId = crypto.randomUUID(),
+		requestId = crypto.randomUUID(),
 	): Promise<
 		HttpResult<
 			TResponseType,

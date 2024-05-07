@@ -3,7 +3,7 @@ export const processEnvValueOrDefault = (
 	def: string,
 	valid: string[],
 ): string => {
-	const val = process.env[name];
+	const val = Deno.env.get(name);
 
 	if (val === undefined) {
 		console.warn(`${name} not set. Defaulting to ${def}.`);

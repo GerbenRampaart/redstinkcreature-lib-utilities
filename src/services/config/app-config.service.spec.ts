@@ -1,10 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppConfigService } from './app-config.service.ts';
 import { AppConfigModule } from './app-config.module.ts';
-import { z } from 'zod';
-import { env } from 'bun';
+import z from 'zod';
+import { assertEquals, assertExists, assertThrows } from 'std/assert';
 
-describe('AppConfigService', () => {
+Deno.test({
+	name: 'LoggerModule',
+	permissions: {},
+}, async (t: Deno.TestContext) => {
 	const appSchema = z.object({
 		TEST: z.string().default('bla'),
 		TEST_NUMBER: z.number().default(123),
@@ -14,10 +17,12 @@ describe('AppConfigService', () => {
 	});
 
 	type AppSchemaType = z.infer<typeof appSchema>;
-	let service: AppConfigService<AppSchemaType>;
 
-	beforeEach(async () => {
-		const module: TestingModule = await Test.createTestingModule({
+	let service: AppConfigService<AppSchemaType>;
+	let module: TestingModule;
+
+	await t.step('Create Module', async () => {
+		module = await Test.createTestingModule({
 			imports: [
 				AppConfigModule.registerAsync<AppSchemaType>({
 					schema: appSchema,
@@ -28,50 +33,52 @@ describe('AppConfigService', () => {
 			],
 		}).compile();
 
-		service = module.get<AppConfigService<AppSchemaType>>(AppConfigService);
+		service = module.get(AppConfigService<AppSchemaType>);
 	});
 
-	it('should be defined', () => {
-		expect(service).toBeDefined();
+	await t.step('Check if service is defined', () => {
+		assertExists(service);
 	});
 
-	it('should be bla', () => {
+	await t.step('Should be bla', () => {
 		// FROM default value out provided zod schema (top of this code file).
-		expect(service.get('TEST')).toBe('bla');
+		assertEquals(service.get('TEST'), 'bla');
 	});
 
-	it('should be 123 because it was optional and defaulted to string "123" and then transformed to a number', () => {
+	await t.step(
+		'should be 123 because it was optional and defaulted to string "123" and then transformed to a number',
+		() => {
+			// FROM default value out provided zod schema (top of this code file).
+			assertEquals(service.get('TEST_NUMBER'), 123);
+		},
+	);
+
+	await t.step('should be undefined because is was optional', () => {
 		// FROM default value out provided zod schema (top of this code file).
-		expect(service.get('TEST_NUMBER')).toBe(123);
+		assertEquals(service.get('TEST_NULLABLE_NUMBER'), undefined);
 	});
 
-	it('should be undefined because is was optional', () => {
+	await t.step('should be undefined', () => {
 		// FROM default value out provided zod schema (top of this code file).
-		expect(service.get('TEST_NULLABLE_NUMBER')).toBe(undefined);
+		assertEquals(service.get('UNDEFINED'), undefined);
 	});
 
-	it('should be undefined', () => {
-		// FROM default value out provided zod schema (top of this code file).
-		expect(service.get('UNDEFINED')).toBe(undefined);
-	});
-
-	it('should be debug', () => {
+	await t.step('should be debug', () => {
 		// FROM .env.test
-		expect(service.LOG_LEVEL).toBe('debug');
+		assertEquals(service.LOG_LEVEL, 'debug');
 	});
 
-	it('should throw exception', () => {
+	await t.step('should throw exception', () => {
 		// FROM .env.test
-		expect(() => service.getOrThrow('UNDEFINED')).toThrow();
+		assertThrows(() => service.getOrThrow('UNDEFINED'));
 	});
 
-	it('should be info', () => {
+	await t.step('should be info', () => {
 		// FROM .env.test
-		expect(service.NODE_ENV).toBe('test');
+		assertEquals(service.NODE_ENV, 'test');
 	});
 
-	it('should be 456', () => {
-		// FROM .env.test
-		expect(service.NODE_ENV).toBe('test');
+	await t.step('Close TestModule', async () => {
+		await module.close();
 	});
 });

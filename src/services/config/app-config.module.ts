@@ -7,24 +7,29 @@ import type {
 } from './app-config-module.options.ts';
 import { AppConfigService } from './app-config.service.ts';
 import { glob } from 'glob';
-import { path as arp } from 'app-root-path';
 import { join } from 'node:path';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
-import { env } from 'node:process';
 
 @Module({
 	imports: [
 		AppLoggerModule,
+	],
+	providers: [
+		AppLoggerService,
+		AppConfigService
+	],
+	exports: [
+		AppConfigService
 	]
 })
-export class AppConfigModule {// implements OnModuleInit {
+export class AppConfigModule { // implements OnModuleInit {
 	constructor(
 		private readonly l: AppLoggerService,
 		private readonly cfg: AppConfigService<ProcessEnv>,
 	) {
 	}
 
-/* 	async onModuleInit() {
+	/* 	async onModuleInit() {
 		if (this.cfg.fullDotEnvPath) {
 			this.l.info(
 				`Found .env.${AppConstantsService.rawNodeEnv} at ${this.cfg.fullDotEnvPath}`,
@@ -42,7 +47,7 @@ export class AppConfigModule {// implements OnModuleInit {
 		const ef = `.env.${AppConstantsService.rawNodeEnv}`;
 		const de = await glob(`**/${ef}`, {
 			ignore: 'node_modules/**',
-			cwd: arp,
+			cwd: Deno.cwd(),
 		});
 
 		// If no .env is found AND we're not running in debug mode, throw error.
@@ -58,7 +63,7 @@ export class AppConfigModule {// implements OnModuleInit {
 		let fullDotEnvPath: string | undefined = undefined;
 
 		if (de.length === 1 && AppConstantsService.nodeEnv.isDebug) {
-			fullDotEnvPath = join(arp, de[0]);
+			fullDotEnvPath = join(Deno.cwd(), de[0]);
 		}
 
 		return {
@@ -66,21 +71,15 @@ export class AppConfigModule {// implements OnModuleInit {
 			providers: [
 				{
 					provide: AppConfigService<TSchema>,
-					inject: [
-						{
-							name: 'PROCESS_ENV',
-							provide: () => {
-								return env;
-							},
-						},
-					]
-				}
-				,
+					useFactory: () => {
+						return new AppConfigService();
+					}
+				},
 			],
 
 			exports: [
 				AppConfigService<TSchema>,
-			]
+			],
 		};
 	}
 }

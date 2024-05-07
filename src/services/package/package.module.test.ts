@@ -1,12 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppPackageJsonService } from './package.service.ts';
 import { PackageModule } from './package.module.ts';
+import { assertExists, assertEquals} from 'std/assert';
 
-describe('PackageModule', () => {
+Deno.test({
+	name: 'PackageModule',
+	permissions: {
+		read: true,
+	},
+}, async (t: Deno.TestContext) => {
 	let service: AppPackageJsonService;
+	let module: TestingModule;
 
-	beforeEach(async () => {
-		const module: TestingModule = await Test.createTestingModule({
+	await t.step('Create TestModule', async () => {
+		module = await Test.createTestingModule({
 			imports: [
 				PackageModule,
 			],
@@ -15,11 +22,18 @@ describe('PackageModule', () => {
 		service = module.get<AppPackageJsonService>(AppPackageJsonService);
 	});
 
-	it('should be defined', () => {
-		expect(AppPackageJsonService).toBeDefined();
+	await t.step('Check if service is defined', () => {
+		assertExists(service);
 	});
 
-	it('should be @redstinkcreature/lib-utilities', () => {
-		expect(service.product.pj.name).toBe('@redstinkcreature/lib-utilities');
+	await t.step('Check if service is defined', () => {
+		assertEquals(
+			service.product.pj.name,
+			'@redstinkcreature/lib-utilities',
+		);
+	});
+
+	await t.step('Close TestModule', async () => {
+		await module.close();
 	});
 });

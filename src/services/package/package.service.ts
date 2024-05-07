@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { existsSync, readFileSync } from 'node:fs';
-import { type PackagesType } from './PackageContext.ts';
-import { type PackageJson } from 'type-fest';
+import { type PackagesType, type ProjectJson } from './PackageContext.ts';
 import { PathsService } from '../paths/paths.service.ts';
 
 @Injectable()
@@ -13,7 +12,7 @@ export class AppPackageJsonService {
 
 		if (!pr) {
 			throw new Error(
-				`No product package.json found in the project root. cwd was ${process.cwd()}`,
+				`No product deno.json found in the project root. cwd was ${Deno.cwd()}`,
 			);
 		}
 
@@ -37,7 +36,7 @@ export class AppPackageJsonService {
 	public product: PackagesType;
 	public packages: PackagesType[] = [];
 
-	private loadPj(p: string): PackageJson | undefined {
+	private loadPj(p: string): ProjectJson | undefined {
 		if (existsSync(p)) {
 			const pjContent = readFileSync(p, {
 				encoding: 'utf-8',

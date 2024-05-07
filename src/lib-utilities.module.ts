@@ -1,5 +1,4 @@
 import { Module, type OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { AppLoggerService } from './services/logger/app-logger.service.ts';
 import { AppConfigService } from './services/config/app-config.service.ts';
 import { AppPackageJsonService } from './services/package/package.service.ts';
@@ -16,7 +15,7 @@ export type LibUtilitiesOptions = {
  * services which we have to be careful about depending on each other. Once loaded,
  * the SharedModule, or any module, can depend on the AppUtilitiesModule.
  *
- * The AppPackageService provides information about the app in the form of package.json
+ * The AppPackageService provides information about the app in the form of deno.json
  * information and other pathing data. It depends on nothing.
  *
  * The ConfigModule and sebsequent more opinionated SharedConfigModule provides generic
@@ -58,7 +57,7 @@ export class LibUtilitiesModule implements OnModuleInit {
 
 	onModuleInit() {
 		this.l.info(
-			`Loaded package.json ${this.pj.product.pj.name}:${this.pj.product.pj.version}`,
+			`Loaded ${this.pj.product.pj.name}:${this.pj.product.pj.version}`,
 		);
 	}
 }

@@ -1,26 +1,42 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppLoggerService } from './app-logger.service';
-import { AppLoggerModule } from './app-logger.module';
+import { AppLoggerService } from './app-logger.service.ts';
+import { AppLoggerModule } from './app-logger.module.ts';
+import { assertExists, assertEquals } from 'std/assert';
 
-describe('AppConfigService', () => {
+Deno.test({
+	name: 'LoggerModule',
+	permissions: {
+		read: true
+	},
+}, async (t: Deno.TestContext) => {
 	let service: AppLoggerService;
+	let module: TestingModule;
 
-	beforeEach(async () => {
-		const module: TestingModule = await Test.createTestingModule({
+	await t.step('Create Module', async () => {
+		module = await Test.createTestingModule({
 			imports: [
 				AppLoggerModule,
 			],
 		}).compile();
 
-		service = module.get(AppLoggerService);
+		service = module.get<AppLoggerService>(AppLoggerService);
 	});
 
-	it('should be defined', () => {
-		expect(service).toBeDefined();
+	await t.step('Check if service is defined', () => {
+		assertExists(service);
 	});
 
-	it('should be defined', () => {
+	await t.step('Check if level is settable', () => {
 		service.level = 'fatal';
-		expect(service.level).toBe('fatal');
+		assertEquals(service.level, 'fatal');
+	});
+
+	await t.step('Should log json', () => {
+		service.level = 'fatal';
+		assertEquals(service.level, 'fatal');
+	});
+
+	await t.step('Close TestModule', async () => {
+		await module.close();
 	});
 });

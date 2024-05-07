@@ -1,15 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { type Params, PARAMS_PROVIDER_TOKEN, PinoLogger } from 'nestjs-pino';
 import { type LevelWithSilent } from 'pino';
-import { AppConstantsService } from '../constants/app-constants.service';
+import { AppConstantsService } from '../constants/app-constants.service.ts';
 
 @Injectable()
 export class AppLoggerService extends PinoLogger {
 	constructor(
-		// @ts-ignore: Params is used for super() but typescript doesn't like it.
-		@Inject(PARAMS_PROVIDER_TOKEN) private readonly params: Params,
+		@Inject(PARAMS_PROVIDER_TOKEN)
+		params: Params,
 	) {
 		super(params);
+		
 	}
 
 	public set level(lvl: string) {
@@ -21,11 +22,11 @@ export class AppLoggerService extends PinoLogger {
 			);
 		}
 
-		PinoLogger.root.level = lvl;
+		this.logger.level = lvl;
 	}
 
 	public get level(): LevelWithSilent {
-		return PinoLogger.root.level as LevelWithSilent;
+		return this.logger.level as LevelWithSilent;
 	}
 
 	/**
@@ -37,6 +38,6 @@ export class AppLoggerService extends PinoLogger {
 		msg?: string | undefined,
 		...args: unknown[]
 	): void {
-		this.info(obj, msg, ...args);
+		this.logger.info(obj, msg, ...args);
 	}
 }

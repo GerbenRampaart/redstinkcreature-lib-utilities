@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { path as arp } from 'app-root-path';
 import { globSync } from 'glob';
 import type { AppLoggerService } from '../logger/app-logger.service.ts';
 import { homedir } from 'node:os';
@@ -7,31 +6,31 @@ import { homedir } from 'node:os';
 @Injectable()
 export class PathsService {
 	constructor() {
-		// Example output: [ 'package.json', 'src/services/paths/package.json' ]
-		const allProjectPackageJson = globSync('**/package.json', {
+		// Example output: [ 'deno.json', 'src/services/paths/deno.json' ]
+		const allProjectPackageJson = globSync('**/deno.json', {
 			ignore: 'node_modules/**',
-			cwd: arp,
+			cwd: Deno.cwd(),
 		});
 
-		const productPackageJson = allProjectPackageJson.find((p) =>
-			p === 'package.json'
+		const product = allProjectPackageJson.find((p) =>
+			p === 'deno.json'
 		);
 
-		// We see the root package.json as the product package.json.
+		// We see the root deno.json as the product deno.json.
 		// If that doesn't exist we're very confused.
-		if (!productPackageJson) {
+		if (!product) {
 			throw new Error(
-				`No product package.json found in the project root. cwd was ${process.cwd()}`,
+				`No product deno.json found in the project root. cwd was ${Deno.cwd()}`,
 			);
 		}
 
 		// We're looking for all lib packages which are dependencies in the project.
 		// Those provide useful information for the logger and other services.
-		this.productPath = productPackageJson;
+		this.productPath = product;
 		this.libPaths = globSync(
-			'node_modules/@redstinkcreature/lib-*/package.json',
+			'node_modules/**/@redstinkcreature/lib-*/deno.json',
 			{
-				cwd: arp,
+				cwd: Deno.cwd(),
 			},
 		);
 	}
@@ -49,24 +48,16 @@ export class PathsService {
 				p: this.productPath,
 			},
 			{
-				n: 'app-root-path',
-				p: arp,
-			},
-			{
 				n: 'cwd',
-				p: process.cwd(),
+				p: Deno.cwd(),
 			},
 			{
-				n: 'import.meta.path',
-				p: import.meta.path,
+				n: 'import.meta.dirname',
+				p: import.meta.dirname ?? '?',
 			},
 			{
-				n: 'import.meta.dir',
-				p: import.meta.dir,
-			},
-			{
-				n: 'import.meta.file',
-				p: import.meta.file,
+				n: 'import.meta.filename',
+				p: import.meta.filename ?? '?',
 			},
 			{
 				n: '__dirname',

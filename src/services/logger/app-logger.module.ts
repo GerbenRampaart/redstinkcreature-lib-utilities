@@ -3,7 +3,6 @@ import { AppLoggerService } from './app-logger.service.ts';
 import { LoggerModule } from 'nestjs-pino';
 import { IncomingMessage, ServerResponse } from 'node:http';
 import { type ReqId } from 'pino-http';
-import { v4 } from 'uuid';
 import { type PrettyOptions } from 'pino-pretty';
 import { AppPackageJsonService } from '../package/package.service.ts';
 import { PackageModule } from '../package/package.module.ts';
@@ -50,8 +49,10 @@ import { AppConstantsService } from '../constants/app-constants.service.ts';
 									.headers
 									.requestId;
 
-							const corId = req.headers[cId]?.toString() ?? v4();
-							const reqId = req.headers[rId]?.toString() ?? v4();
+							const corId = req.headers[cId]?.toString() ??
+								crypto.randomUUID();
+							const reqId = req.headers[rId]?.toString() ??
+								crypto.randomUUID();
 
 							req.headers[cId] = corId;
 							req.headers[rId] = reqId;

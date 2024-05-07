@@ -1,11 +1,9 @@
-import { type PackageJson } from 'type-fest';
+export interface ProjectJson {
+	name: string;
+	version: string;
+}
 
-export type PackagesType = {
+export interface PackagesType {
 	path: string;
-	pj: PackageJson;
-};
-
-export interface PackageJsonContext {
-	product: PackagesType;
-	packages: PackagesType[];
+	pj: ProjectJson;
 }
