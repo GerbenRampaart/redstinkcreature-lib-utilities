@@ -7,60 +7,38 @@ import type {
 } from './app-config-module.options.ts';
 import { AppConfigService } from './app-config.service.ts';
 import { glob } from 'glob';
-import { join } from 'node:path';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
 
 @Module({})
-export class AppConfigModule { // implements OnModuleInit {
+export class AppConfigModule implements OnModuleInit {
 	constructor(
 		private readonly l: AppLoggerService,
 		private readonly cfg: AppConfigService<ProcessEnv>,
 	) {
 	}
 
-	/* 	async onModuleInit() {
-		if (this.cfg.fullDotEnvPath) {
-			this.l.info(
-				`Found .env.${AppConstantsService.rawNodeEnv} at ${this.cfg.fullDotEnvPath}`,
-			);
-		} else {
-			this.l.info(
-				`No dotenv loaded because env was ${AppConstantsService.rawNodeEnv}`,
-			);
+	onModuleInit() {
+		if(this.cfg.dotEnvDefaultsPath) {
+			this.l.info(`Using dotenv: ${this.cfg.dotEnvDefaultsPath}`);
 		}
-	} */
+
+		if(this.cfg.dotEnvEnvironmentPath) {
+			this.l.info(`Using dotenv: ${this.cfg.dotEnvEnvironmentPath}`);
+		}
+	}
 
 	public static async registerAsync<TSchema extends ProcessEnv>(
 		options?: AppConfigModuleOptions,
 	): Promise<DynamicModule> {
-		const ef = `.env.${AppConstantsService.rawNodeEnv}`;
-		const de = await glob(`**/${ef}`, {
-			ignore: 'node_modules/**',
-			cwd: Deno.cwd(),
-		});
 
-		// If no .env is found AND we're not running in debug mode, throw error.
-		if (de.length === 0 && !AppConstantsService.nodeEnv.isDebug) {
-			throw new Error(`No ${ef} file found.`);
+		let dotEnvEnvironmentPath: string | null = null;
+		if (options?.useDotEnvEnvironment) {
+			dotEnvEnvironmentPath = await this.findDotEnvPathByName(`.env.${AppConstantsService.rawNodeEnv}`);
 		}
 
-		// if multiple are found also throw an error. (in any mode)
-		if (de.length > 1) {
-			throw new Error(`Multiple ${ef} found in ${de.join()}.`);
-		}
-
-		let fullDotEnvPath: string | undefined = undefined;
-
-		if (de.length === 1 && AppConstantsService.nodeEnv.isDebug) {
-			fullDotEnvPath = join(Deno.cwd(), de[0]);
-		}
-
-		if (options?.schema) {
-			const zodResult = await options.schema.parseAsync(Deno.env.toObject());
-			
-			for (const key of Object.keys(zodResult)) {
-				Deno.env.set(key, zodResult[key])
-			}
+		let dotEnvDefaultsPath: string | null = null;
+		if (options?.useDotEnvDefaults) {
+			dotEnvDefaultsPath = await this.findDotEnvPathByName(`.env.defaults`);
 		}
 
 		return {
@@ -70,8 +48,14 @@ export class AppConfigModule { // implements OnModuleInit {
 			],
 			providers: [
 				{
-					provide: 'ENV',
-					useValue: Deno.env.toObject()
+					provide: 'DOTENV_ENVIRONMENT_PATH',
+					useValue: dotEnvEnvironmentPath
+				}, {
+					provide: 'DOTENV_DEFAULTS_PATH',
+					useValue: dotEnvDefaultsPath
+				}, {
+					provide: 'ZOD_SCHEMA',
+					useValue: options?.schema,
 				},
 				AppLoggerService,
 				AppConfigService<TSchema>
@@ -80,5 +64,23 @@ export class AppConfigModule { // implements OnModuleInit {
 				AppConfigService<TSchema>,
 			],
 		};
+	}
+
+	private static async findDotEnvPathByName(ef: string): Promise<string> {
+		const de = await glob(`**/${ef}`, {
+			ignore: 'node_modules/**',
+			cwd: Deno.cwd(),
+		});
+
+		if (de.length === 0) {
+			throw new Error(`No ${ef} file found.`);
+		}
+
+		// if multiple are found also throw an error. (in any mode)
+		if (de.length > 1) {
+			throw new Error(`Multiple ${ef} found in ${de.join()}.`);
+		}
+
+		return de[0];
 	}
 }

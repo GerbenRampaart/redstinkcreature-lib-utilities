@@ -4,7 +4,7 @@ import { AppLoggerModule } from './app-logger.module.ts';
 import { assertExists, assertEquals } from 'std/assert';
 
 Deno.test({
-	name: 'LoggerModule',
+	name: 'AppLoggerModule',
 	permissions: {
 		read: true
 	},

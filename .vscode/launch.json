@@ -1,0 +1,26 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "request": "launch",
+      "name": "Debug tests",
+      "type": "node",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "deno",
+      "runtimeArgs": [
+        "test",
+        "--inspect-brk",
+        "--allow-all",
+        "./src/services/config/app-config.service.test.ts"
+      ],
+      "env": {
+        "DENO_ENV": "test"
+      },
+      "attachSimplePort": 9229,
+      "outputCapture": "std"
+    }
+  ]
+}

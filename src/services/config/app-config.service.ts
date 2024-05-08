@@ -1,44 +1,138 @@
-import { Inject, Injectable, Optional } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import {
 	type ProcessEnv,
 	type ProcessEnvZod,
 } from './app-config-module.options.ts';
+import { loadSync } from 'dotenv';
+import { AppLoggerService } from '../logger/app-logger.service.ts';
+
+export type RawSetting = {
+	name: string,
+	value: unknown | undefined,
+};
 
 @Injectable()
 export class AppConfigService<TSchema extends ProcessEnv> {
 	constructor(
-		@Inject('ENV') env: Record<string, string | undefined>,
-		//@Optional() public readonly fullDotEnvPath?: string,
-		//public readonly schema?: ProcessEnvZod,
+		private readonly l: AppLoggerService,
+		@Inject('DOTENV_ENVIRONMENT_PATH') public readonly dotEnvEnvironmentPath: string | null,
+		@Inject('DOTENV_DEFAULTS_PATH') public readonly dotEnvDefaultsPath: string | null,
+		@Inject('ZOD_SCHEMA') public readonly schema?: ProcessEnvZod,
 	) {
-		console.log('bla')
-		Object.keys(Deno.env).forEach((key) => {
-			this.pe.push({
-				n: key,
-				v: Deno.env.get(key),
-			});
-		});
+		this.initialize();
 	}
 
-	private pe: { n: string; v: string | undefined }[] = [];
+	private map = (r: Record<string, unknown>): RawSetting[] => Object.keys(r).map(key => {
+		return {
+			name: key,
+			value: r[key],
+		}
+	});
+
+	private _originalSettings: Record<string, unknown> = {};
+	private _changesMadeByDotEnv: Record<string, unknown> = {};
+	private _changesMadeBySchema: Record<string, unknown> = {};
+	private _finalSettings: Record<string, unknown> = {};
+	private _finalSettingsMap: RawSetting[] = [];
+
+	public get changesMadeByDotEnv(): Record<string, unknown> {
+		return this._changesMadeByDotEnv;
+	}
+
+	public get originalSettings(): Record<string, unknown> {
+		return this._originalSettings;
+	}
+
+	public get changesMadeBySchema(): Record<string, unknown> {
+		return this._changesMadeBySchema;
+	}
+
+	public get finalSettings(): Record<string, unknown> {
+		return this._finalSettings;
+	}
+
+	public get finalSettingsMap(): RawSetting[] {
+		return this._finalSettingsMap;
+	}
+
+	/**
+	 * You don't need to call initialize() if you are using the default behaviour since
+	 * this function is also called in the constructor.
+	 * 
+	 * Calling initialize() again however somwhere in code will:
+	 * - Take the current content of Deno.env;
+	 * - Apply the dotenvs (if required) as configured in the AppConfigModule.registerAsync.
+	 * - Apply the schema (if provided) as configured in the AppConfigModule.registerAsync.
+	 */
+	public initialize() {
+		this._originalSettings = Deno.env.toObject();
+
+		this.loadDotEnvs();
+		this._finalSettings = this.move(this._originalSettings, this._changesMadeByDotEnv);
+
+		if (this.schema) {
+			const result = this.schema.safeParse(this._finalSettings);
+
+			if (!result.success) {
+				throw new Error(result.error.message);
+			} else {
+				this._changesMadeBySchema = result.data;
+				this._finalSettings = this.move(this._finalSettings, this._changesMadeBySchema);
+			}
+		}
+
+		this._finalSettingsMap = this.map(this._finalSettings);
+	}
+
+	private move(
+		originalValues: Record<string, unknown>, 
+		newValues: Record<string, unknown>): 
+		Record<string, unknown> {
+
+		const result: Record<string, unknown> = {
+			...newValues
+		};
+
+		for (const ov of Object.keys(originalValues)) {
+			const ds = newValues[ov];
+			
+			// If not found in the newValues, we must use the old value.
+			if (!ds) {
+				result[ov] = originalValues[ov];
+			}
+		}
+
+		return result;
+	}
+
+	private loadDotEnvs() {
+		const result = loadSync({
+			envPath: this.dotEnvEnvironmentPath,
+			allowEmptyValues: true,
+			defaultsPath: this.dotEnvDefaultsPath,
+			examplePath: null,
+		});
+
+		this._changesMadeByDotEnv = result;
+	}
 
 	get<T extends keyof TSchema>(key: T): TSchema[T] | undefined {
-		const result = this.pe.find((p) => p.n === key);
-		return result?.v as TSchema[T];
+		const result = this._finalSettingsMap.find((p) => p.name === key);
+		return result?.value as TSchema[T];
 	}
 
 	getOrThrow<T extends keyof TSchema>(key: T) {
-		const result = this.pe.find((p) => p.n === key);
+		const result = this._finalSettingsMap.find((p) => p.name === key);
 
-		if (!result) {
+		if (!result || result.value === undefined) {
 			throw new Error(`key ${String(key)} not found or value was undefined`);
 		}
 
-		return result.v as TSchema[T];
+		return result.value as TSchema[T];
 	}
 
-	public get NODE_ENV(): string {
+	public get DENO_ENV(): string {
 		return AppConstantsService.rawNodeEnv;
 	}
 
@@ -46,11 +140,11 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 		return AppConstantsService.rawLogLevel;
 	}
 
-	/* 	public get keys(): string[] {
+	public get schemaKeys(): string[] {
 		if (this.schema) {
 			return Object.keys(this.schema.shape);
 		}
 
 		return [];
-	} */
+	}
 }

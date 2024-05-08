@@ -16,11 +16,11 @@ export const envsArray: string[] = [
 ];
 
 // This is just safe code.
-// Things like LOG_LEVEL and NODE_ENV are so low-level I want some access to defaults without
+// Things like LOG_LEVEL and DENO_ENV are so low-level I want some access to defaults without
 // having any higher level code initiliazed like nestjs modules.
-export const NODE_ENV = function (): string {
+export const DENO_ENV = function (): string {
 	return processEnvValueOrDefault(
-		'NODE_ENV',
+		'DENO_ENV',
 		'production',
 		envsArray,
 	);

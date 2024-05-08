@@ -5,7 +5,7 @@ import z from 'zod';
 import { assertEquals, assertExists, assertThrows } from 'std/assert';
 
 Deno.test({
-	name: 'LoggerModule',
+	name: 'AppConfigModule',
 	permissions: {
 		read: true,
 		env: true,
@@ -29,6 +29,8 @@ Deno.test({
 			imports: [
 				AppConfigModule.registerAsync<AppSchemaType>({
 					schema: appSchema,
+					useDotEnvEnvironment: true,
+					useDotEnvDefaults: true
 				}),
 			]
 		}).compile();
@@ -75,7 +77,7 @@ Deno.test({
 
 	await t.step('should be info', () => {
 		// FROM .env.test
-		assertEquals(service.NODE_ENV, 'test');
+		assertEquals(service.DENO_ENV, 'test');
 	});
 
 	await t.step('Close TestModule', async () => {

@@ -29,7 +29,7 @@ export const levelsArray: string[] = [
 // use the zod schema to fill it with a default.
 
 // So this is just safe code.
-// Things like LOG_LEVEL and NODE_ENV are so low-level I want some access to defaults without
+// Things like LOG_LEVEL and DENO_ENV are so low-level I want some access to defaults without
 // having any higher level code initialized like nestjs modules.
 export const LOG_LEVEL = function (): string {
 	return processEnvValueOrDefault(

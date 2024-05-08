@@ -3,8 +3,8 @@
     "version": "0.1.0",
     "exports": "./index.ts",
     "tasks": {
-        "dev": "deno run --watch --allow-net --allow-read --allow-env ./src/main.ts",
-        "test": "deno test ./src/**/*.test.ts"
+        "dev": "DENO_ENV=development deno run --watch --allow-net --allow-read --allow-env ./src/main.ts",
+        "test": "DENO_ENV=test deno test ./src/**/*.test.ts"
     },
     "compilerOptions": {
         "experimentalDecorators": true,
@@ -18,7 +18,7 @@
         "rxjs": "npm:rxjs@7",
         "nestjs-pino": "npm:nestjs-pino@4",
         "pino": "npm:pino@9",
-        "dotenv": "npm:dotenv@16",
+        "dotenv": "jsr:@std/dotenv",
         "glob": "npm:glob@10",
         "pino-pretty": "npm:pino-pretty@11",
         "pino-http": "npm:pino-http@10",

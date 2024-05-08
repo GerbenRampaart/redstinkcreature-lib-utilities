@@ -1,9 +1,9 @@
 import { levelsArray, LOG_LEVEL } from './LOG_LEVEL.ts';
-import { envsArray, NODE_ENV } from './NODE_ENV.ts';
+import { DENO_ENV, envsArray } from './DENO_ENV.ts';
 
 export class AppConstantsService {
 	public static rawLogLevel = LOG_LEVEL();
-	public static rawNodeEnv = NODE_ENV();
+	public static rawNodeEnv = DENO_ENV();
 
 	public static get libUtilitiesConstants() {
 		return {
