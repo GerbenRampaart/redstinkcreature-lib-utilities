@@ -10,18 +10,7 @@ import { glob } from 'glob';
 import { join } from 'node:path';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
 
-@Module({
-	imports: [
-		AppLoggerModule,
-	],
-	providers: [
-		AppLoggerService,
-		AppConfigService
-	],
-	exports: [
-		AppConfigService
-	]
-})
+@Module({})
 export class AppConfigModule { // implements OnModuleInit {
 	constructor(
 		private readonly l: AppLoggerService,
@@ -66,17 +55,27 @@ export class AppConfigModule { // implements OnModuleInit {
 			fullDotEnvPath = join(Deno.cwd(), de[0]);
 		}
 
+		if (options?.schema) {
+			const zodResult = await options.schema.parseAsync(Deno.env.toObject());
+			
+			for (const key of Object.keys(zodResult)) {
+				Deno.env.set(key, zodResult[key])
+			}
+		}
+
 		return {
 			module: AppConfigModule,
+			imports: [
+				AppLoggerModule
+			],
 			providers: [
 				{
-					provide: AppConfigService<TSchema>,
-					useFactory: () => {
-						return new AppConfigService();
-					}
+					provide: 'ENV',
+					useValue: Deno.env.toObject()
 				},
+				AppLoggerService,
+				AppConfigService<TSchema>
 			],
-
 			exports: [
 				AppConfigService<TSchema>,
 			],

@@ -1186,7 +1186,7 @@
       "npm:pino-http@10",
       "npm:pino-pretty@11",
       "npm:pino@9",
-      "npm:reflect-metadata@0.2.0",
+      "npm:reflect-metadata",
       "npm:rxjs@7",
       "npm:supertest@7",
       "npm:zod@3"

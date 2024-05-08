@@ -14,7 +14,7 @@
         "@nestjs/common": "npm:@nestjs/common@10",
         "@nestjs/core": "npm:@nestjs/core@10",
         "@nestjs/platform-express": "npm:@nestjs/platform-express@10",
-        "reflect-metadata": "npm:reflect-metadata@0.2.0",
+        "reflect-metadata": "npm:reflect-metadata",
         "rxjs": "npm:rxjs@7",
         "nestjs-pino": "npm:nestjs-pino@4",
         "pino": "npm:pino@9",

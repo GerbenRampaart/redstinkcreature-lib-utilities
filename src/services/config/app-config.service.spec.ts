@@ -6,7 +6,10 @@ import { assertEquals, assertExists, assertThrows } from 'std/assert';
 
 Deno.test({
 	name: 'LoggerModule',
-	permissions: {},
+	permissions: {
+		read: true,
+		env: true,
+	},
 }, async (t: Deno.TestContext) => {
 	const appSchema = z.object({
 		TEST: z.string().default('bla'),
@@ -27,10 +30,7 @@ Deno.test({
 				AppConfigModule.registerAsync<AppSchemaType>({
 					schema: appSchema,
 				}),
-			],
-			providers: [
-				AppConfigService<AppSchemaType>,
-			],
+			]
 		}).compile();
 
 		service = module.get(AppConfigService<AppSchemaType>);

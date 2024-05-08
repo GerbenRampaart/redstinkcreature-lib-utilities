@@ -1,18 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import {
 	type ProcessEnv,
 	type ProcessEnvZod,
 } from './app-config-module.options.ts';
-import { res } from '../../../../../../../Library/Caches/deno/npm/registry.npmjs.org/pino-std-serializers/6.2.2/index.d.ts';
 
 @Injectable()
 export class AppConfigService<TSchema extends ProcessEnv> {
 	constructor(
-		//@Inject('PROCESS_ENV') processEnv: Record<string, string | undefined>,
-		//public readonly fullDotEnvPath?: string,
+		@Inject('ENV') env: Record<string, string | undefined>,
+		//@Optional() public readonly fullDotEnvPath?: string,
 		//public readonly schema?: ProcessEnvZod,
 	) {
+		console.log('bla')
 		Object.keys(Deno.env).forEach((key) => {
 			this.pe.push({
 				n: key,
