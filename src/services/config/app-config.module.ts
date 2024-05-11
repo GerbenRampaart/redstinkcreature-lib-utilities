@@ -1,4 +1,4 @@
-import { type DynamicModule, Module, type OnModuleInit } from '@nestjs/common';
+import { type DynamicModule, Module, type OnModuleInit, Provider } from '@nestjs/common';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
 import type {
@@ -8,6 +8,7 @@ import type {
 import { AppConfigService } from './app-config.service.ts';
 import { glob } from 'glob';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
+import { join } from 'node:path';
 
 @Module({})
 export class AppConfigModule implements OnModuleInit {
@@ -18,6 +19,9 @@ export class AppConfigModule implements OnModuleInit {
 	}
 
 	onModuleInit() {
+		this.cfg.changesMadeByDotEnv.forEach(s => {
+			this.l.info(s.name)
+					});
 		if(this.cfg.dotEnvDefaultsPath) {
 			this.l.info(`Using dotenv: ${this.cfg.dotEnvDefaultsPath}`);
 		}
@@ -25,6 +29,8 @@ export class AppConfigModule implements OnModuleInit {
 		if(this.cfg.dotEnvEnvironmentPath) {
 			this.l.info(`Using dotenv: ${this.cfg.dotEnvEnvironmentPath}`);
 		}
+
+
 	}
 
 	public static async registerAsync<TSchema extends ProcessEnv>(
@@ -33,7 +39,7 @@ export class AppConfigModule implements OnModuleInit {
 
 		let dotEnvEnvironmentPath: string | null = null;
 		if (options?.useDotEnvEnvironment) {
-			dotEnvEnvironmentPath = await this.findDotEnvPathByName(`.env.${AppConstantsService.rawNodeEnv}`);
+			dotEnvEnvironmentPath = await this.findDotEnvPathByName(`.env.${AppConstantsService.rawDenoEnv()}`);
 		}
 
 		let dotEnvDefaultsPath: string | null = null;
@@ -41,26 +47,31 @@ export class AppConfigModule implements OnModuleInit {
 			dotEnvDefaultsPath = await this.findDotEnvPathByName(`.env.defaults`);
 		}
 
+		const providers: Provider[] = [
+			{
+				provide: 'DOTENV_ENVIRONMENT_PATH',
+				useValue: dotEnvEnvironmentPath
+			}, {
+				provide: 'DOTENV_DEFAULTS_PATH',
+				useValue: dotEnvDefaultsPath
+			}, {
+				provide: 'ZOD_SCHEMA',
+				useValue: options?.schema,
+			},
+		];
+
 		return {
 			module: AppConfigModule,
 			imports: [
 				AppLoggerModule
 			],
 			providers: [
-				{
-					provide: 'DOTENV_ENVIRONMENT_PATH',
-					useValue: dotEnvEnvironmentPath
-				}, {
-					provide: 'DOTENV_DEFAULTS_PATH',
-					useValue: dotEnvDefaultsPath
-				}, {
-					provide: 'ZOD_SCHEMA',
-					useValue: options?.schema,
-				},
+				...providers,
 				AppLoggerService,
 				AppConfigService<TSchema>
 			],
 			exports: [
+				...providers,
 				AppConfigService<TSchema>,
 			],
 		};
@@ -81,6 +92,6 @@ export class AppConfigModule implements OnModuleInit {
 			throw new Error(`Multiple ${ef} found in ${de.join()}.`);
 		}
 
-		return de[0];
+		return join(Deno.cwd(), de[0]);
 	}
 }

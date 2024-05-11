@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppPackageJsonService } from './package.service.ts';
+import { PackageService } from './package.service.ts';
 import { PackageModule } from './package.module.ts';
 import { assertExists, assertEquals} from 'std/assert';
 
@@ -9,7 +9,7 @@ Deno.test({
 		read: true,
 	},
 }, async (t: Deno.TestContext) => {
-	let service: AppPackageJsonService;
+	let service: PackageService;
 	let module: TestingModule;
 
 	await t.step('Create TestModule', async () => {
@@ -19,7 +19,7 @@ Deno.test({
 			],
 		}).compile();
 
-		service = module.get<AppPackageJsonService>(AppPackageJsonService);
+		service = module.get(PackageService);
 	});
 
 	await t.step('Check if service is defined', () => {

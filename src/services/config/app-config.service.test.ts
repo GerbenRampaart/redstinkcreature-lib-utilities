@@ -3,6 +3,7 @@ import { AppConfigService } from './app-config.service.ts';
 import { AppConfigModule } from './app-config.module.ts';
 import z from 'zod';
 import { assertEquals, assertExists, assertThrows } from 'std/assert';
+import { AppConstantsService } from '../constants/app-constants.service.ts';
 
 Deno.test({
 	name: 'AppConfigModule',
@@ -13,7 +14,7 @@ Deno.test({
 }, async (t: Deno.TestContext) => {
 	const appSchema = z.object({
 		TEST: z.string().default('bla'),
-		TEST_NUMBER: z.number().default(123),
+		TEST_NUMBER: z.coerce.number().default(123),
 		UNDEFINED: z.string().optional(),
 		TEST_NULLABLE_NUMBER: z.number().optional(),
 		MY_TEST_VALUE: z.string().optional(), // set by .env.test
@@ -29,8 +30,8 @@ Deno.test({
 			imports: [
 				AppConfigModule.registerAsync<AppSchemaType>({
 					schema: appSchema,
-					useDotEnvEnvironment: true,
-					useDotEnvDefaults: true
+					useDotEnvEnvironment: AppConstantsService.denoEnv.isTest,
+					useDotEnvDefaults: AppConstantsService.denoEnv.isTest
 				}),
 			]
 		}).compile();

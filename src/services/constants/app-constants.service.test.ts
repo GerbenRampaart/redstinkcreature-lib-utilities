@@ -5,5 +5,5 @@ Deno.test({
 	name: 'AppConstantsService',
 	permissions: {},
 }, () => {
-	assertArrayIncludes<string>(AppConstantsService.validNodeEnvs, ['repl']);
+	assertArrayIncludes<string>(AppConstantsService.validDenoEnvs, ['repl']);
 });

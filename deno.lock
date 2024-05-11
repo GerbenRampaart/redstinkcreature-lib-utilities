@@ -13,8 +13,9 @@
       "npm:@nestjs/testing@10": "npm:@nestjs/testing@10.3.8_@nestjs+common@10.3.8__reflect-metadata@0.2.2__rxjs@7.8.1_@nestjs+core@10.3.8__@nestjs+common@10.3.8___reflect-metadata@0.2.2___rxjs@7.8.1__reflect-metadata@0.2.2__rxjs@7.8.1",
       "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:axios@1": "npm:axios@1.6.8",
+      "npm:express@4": "npm:express@4.19.2",
       "npm:glob@10": "npm:glob@10.3.12",
-      "npm:nestjs-pino@4": "npm:nestjs-pino@4.0.0_@nestjs+common@10.3.8__reflect-metadata@0.2.2__rxjs@7.8.1_pino-http@9.0.0",
+      "npm:nestjs-pino@4": "npm:nestjs-pino@4.0.0_@nestjs+common@10.3.8__reflect-metadata@0.2.2__rxjs@7.8.1_pino-http@9.0.0_rxjs@7.8.1",
       "npm:pino-http@10": "npm:pino-http@10.1.0",
       "npm:pino-pretty@11": "npm:pino-pretty@11.0.0",
       "npm:pino@9": "npm:pino@9.0.0",
@@ -692,7 +693,7 @@
         "integrity": "sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==",
         "dependencies": {}
       },
-      "nestjs-pino@4.0.0_@nestjs+common@10.3.8__reflect-metadata@0.2.2__rxjs@7.8.1_pino-http@9.0.0": {
+      "nestjs-pino@4.0.0_@nestjs+common@10.3.8__reflect-metadata@0.2.2__rxjs@7.8.1_pino-http@9.0.0_rxjs@7.8.1": {
         "integrity": "sha512-XhCg/R+l3w0BFP6MHyR6lU/BHVEV0tV9z24G0vuA9FD3sv+TQNvnO9uVsF1l/oVspgGfQ9Qulmb2UbsfYlI0+g==",
         "dependencies": {
           "@nestjs/common": "@nestjs/common@10.3.8_reflect-metadata@0.2.2_rxjs@7.8.1",
@@ -1187,6 +1188,7 @@
       "npm:@nestjs/platform-express@10",
       "npm:@nestjs/testing@10",
       "npm:axios@1",
+      "npm:express@4",
       "npm:glob@10",
       "npm:nestjs-pino@4",
       "npm:pino-http@10",

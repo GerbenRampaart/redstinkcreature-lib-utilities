@@ -36,20 +36,16 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 	private _finalSettings: Record<string, unknown> = {};
 	private _finalSettingsMap: RawSetting[] = [];
 
-	public get changesMadeByDotEnv(): Record<string, unknown> {
-		return this._changesMadeByDotEnv;
+	public get changesMadeByDotEnv() {
+		return this.map(this._changesMadeByDotEnv);
 	}
 
-	public get originalSettings(): Record<string, unknown> {
-		return this._originalSettings;
+	public get originalSettings() {
+		return this.map(this._originalSettings);
 	}
 
-	public get changesMadeBySchema(): Record<string, unknown> {
-		return this._changesMadeBySchema;
-	}
-
-	public get finalSettings(): Record<string, unknown> {
-		return this._finalSettings;
+	public get changesMadeBySchema() {
+		return this.map(this._changesMadeBySchema);
 	}
 
 	public get finalSettingsMap(): RawSetting[] {
@@ -109,6 +105,7 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 	private loadDotEnvs() {
 		const result = loadSync({
 			envPath: this.dotEnvEnvironmentPath,
+			export: true,
 			allowEmptyValues: true,
 			defaultsPath: this.dotEnvDefaultsPath,
 			examplePath: null,
@@ -133,11 +130,11 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 	}
 
 	public get DENO_ENV(): string {
-		return AppConstantsService.rawNodeEnv;
+		return AppConstantsService.rawDenoEnv();
 	}
 
 	public get LOG_LEVEL(): string {
-		return AppConstantsService.rawLogLevel;
+		return AppConstantsService.rawLogLevel();
 	}
 
 	public get schemaKeys(): string[] {

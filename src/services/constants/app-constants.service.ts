@@ -2,8 +2,13 @@ import { levelsArray, LOG_LEVEL } from './LOG_LEVEL.ts';
 import { DENO_ENV, envsArray } from './DENO_ENV.ts';
 
 export class AppConstantsService {
-	public static rawLogLevel = LOG_LEVEL();
-	public static rawNodeEnv = DENO_ENV();
+	public static rawLogLevel() {
+		return LOG_LEVEL();
+	}
+
+	public static rawDenoEnv() { 
+		return DENO_ENV();
+	}
 
 	public static get libUtilitiesConstants() {
 		return {
@@ -19,15 +24,16 @@ export class AppConstantsService {
 		return levelsArray;
 	}
 
-	public static get validNodeEnvs(): string[] {
+	public static get validDenoEnvs(): string[] {
 		return envsArray;
 	}
 
-	public static get nodeEnv() {
-		const isTest = this.rawNodeEnv === 'test';
-		const isProduction = this.rawNodeEnv === 'production';
-		const isDevelopment = this.rawNodeEnv === 'development';
-		const isRepl = this.rawNodeEnv === 'repl';
+	public static get denoEnv() {
+		const de = this.rawDenoEnv();
+		const isTest = de === 'test';
+		const isProduction = de === 'production';
+		const isDevelopment = de === 'development';
+		const isRepl = de === 'repl';
 
 		return {
 			isTest,

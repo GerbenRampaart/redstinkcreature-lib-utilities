@@ -1,10 +1,13 @@
-import { Module, type OnModuleInit } from '@nestjs/common';
+import { Module, OnApplicationBootstrap, OnApplicationShutdown, type OnModuleInit } from '@nestjs/common';
 import { AppLoggerService } from './services/logger/app-logger.service.ts';
 import { AppConfigService } from './services/config/app-config.service.ts';
-import { AppPackageJsonService } from './services/package/package.service.ts';
+import { PackageService } from './services/package/package.service.ts';
 import { type AppConfigModuleOptions } from './services/config/app-config-module.options.ts';
 import { PathsService } from './services/paths/paths.service.ts';
 import { AppConfigModule } from './services/config/app-config.module.ts';
+import { TestController } from './test.controller.ts';
+import { AppLoggerModule } from './services/logger/app-logger.module.ts';
+import { PackageModule } from './services/package/index.ts';
 
 export type LibUtilitiesOptions = {
 	config?: AppConfigModuleOptions;
@@ -26,7 +29,7 @@ export type LibUtilitiesOptions = {
  * those services to be available using ModuleRef().
  */
 @Module({})
-export class LibUtilitiesModule implements OnModuleInit {
+export class LibUtilitiesModule implements OnModuleInit, OnApplicationBootstrap, OnApplicationShutdown {
 	public static register(
 		options?: LibUtilitiesOptions,
 	) {
@@ -34,25 +37,39 @@ export class LibUtilitiesModule implements OnModuleInit {
 			module: LibUtilitiesModule,
 			imports: [
 				AppConfigModule.registerAsync(options?.config),
+				AppLoggerModule,
+				PackageModule
 			],
 			providers: [
+				PackageService,
 				AppConfigService,
-				AppPackageJsonService,
 				AppLoggerService,
 				PathsService,
 			],
 			exports: [
+				PackageService,
 				AppConfigService,
 				AppLoggerService,
-				AppPackageJsonService,
 				PathsService,
 			],
+			controllers: [
+				TestController
+			]
 		};
 	}
+
 	constructor(
 		private readonly l: AppLoggerService,
-		private readonly pj: AppPackageJsonService,
+		private readonly pj: PackageService,
 	) {
+	}
+
+	onApplicationShutdown(signal?: string | undefined) {
+		console.warn(`Application shutdown signal ${signal}`);
+	}
+	
+	onApplicationBootstrap() {
+		console.warn('Application bootstrap');
 	}
 
 	onModuleInit() {

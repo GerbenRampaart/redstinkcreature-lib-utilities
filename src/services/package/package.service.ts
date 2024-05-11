@@ -4,7 +4,7 @@ import { type PackagesType, type ProjectJson } from './PackageContext.ts';
 import { PathsService } from '../paths/paths.service.ts';
 
 @Injectable()
-export class AppPackageJsonService {
+export class PackageService {
 	constructor(
 		private readonly p: PathsService,
 	) {

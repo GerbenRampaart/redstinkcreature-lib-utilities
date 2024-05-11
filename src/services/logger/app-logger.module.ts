@@ -4,9 +4,10 @@ import { LoggerModule } from 'nestjs-pino';
 import { IncomingMessage, ServerResponse } from 'node:http';
 import { type ReqId } from 'pino-http';
 import { type PrettyOptions } from 'pino-pretty';
-import { AppPackageJsonService } from '../package/package.service.ts';
+import { PackageService } from '../package/package.service.ts';
 import { PackageModule } from '../package/package.module.ts';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
+import { build } from 'pino-pretty';
 
 @Module({
 	imports: [
@@ -15,10 +16,10 @@ import { AppConstantsService } from '../constants/app-constants.service.ts';
 				PackageModule,
 			],
 			inject: [
-				AppPackageJsonService,
+				PackageService,
 			],
 			useFactory: (
-				pj: AppPackageJsonService,
+				pj: PackageService,
 			) => {
 				// https://github.com/pinojs/pino-pretty#options
 				const options: PrettyOptions = {
@@ -28,14 +29,9 @@ import { AppConstantsService } from '../constants/app-constants.service.ts';
 
 				return {
 					pinoHttp: {
-						level: AppConstantsService.rawLogLevel,
+						level: AppConstantsService.rawLogLevel(),
 						name: `${pj.product.pj.name}:${pj.product.pj.version}`,
-						transport: AppConstantsService.nodeEnv.isDebug
-							? {
-								target: 'pino-pretty',
-								options,
-							}
-							: undefined, // undefined = stdout
+						stream: AppConstantsService.denoEnv.isDebug ? build(options) : undefined,
 						genReqId: (
 							req: IncomingMessage,
 							res: ServerResponse,

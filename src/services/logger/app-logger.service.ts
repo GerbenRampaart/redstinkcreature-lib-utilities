@@ -10,7 +10,6 @@ export class AppLoggerService extends PinoLogger {
 		params: Params,
 	) {
 		super(params);
-		
 	}
 
 	public set level(lvl: string) {
