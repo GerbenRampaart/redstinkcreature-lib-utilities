@@ -19,18 +19,23 @@ export class AppConfigModule implements OnModuleInit {
 	}
 
 	onModuleInit() {
-		this.cfg.changesMadeByDotEnv.forEach(s => {
-			this.l.info(s.name)
-					});
 		if(this.cfg.dotEnvDefaultsPath) {
-			this.l.info(`Using dotenv: ${this.cfg.dotEnvDefaultsPath}`);
+			this.l.info(`DOTENV file included: ${this.cfg.dotEnvDefaultsPath}`);
 		}
 
 		if(this.cfg.dotEnvEnvironmentPath) {
-			this.l.info(`Using dotenv: ${this.cfg.dotEnvEnvironmentPath}`);
+			this.l.info(`DOTENV file included: ${this.cfg.dotEnvEnvironmentPath}`);
 		}
 
+		if (this.cfg.changesMadeBySchema.length > 0) {
+			const sc = this.cfg.changesMadeBySchema.map<string>(c => `${c.name}: ${c.value}`);
+			this.l.info(`ZOD SCHEMA changes: ${sc.join(', ')}`);
+		}
 
+		if (this.cfg.changesMadeByDotEnv.length > 0) {
+			const sc = this.cfg.changesMadeByDotEnv.map<string>(c => `${c.name}: ${c.value}`);
+			this.l.info(`DOTENV changes: ${sc.join(', ')}`);
+		}
 	}
 
 	public static async registerAsync<TSchema extends ProcessEnv>(

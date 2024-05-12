@@ -61,8 +61,8 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 	 * - Apply the dotenvs (if required) as configured in the AppConfigModule.registerAsync.
 	 * - Apply the schema (if provided) as configured in the AppConfigModule.registerAsync.
 	 */
-	public initialize() {
-		this._originalSettings = Deno.env.toObject();
+	public initialize(settings: Record<string, string> = Deno.env.toObject()) {
+		this._originalSettings = settings;
 
 		this.loadDotEnvs();
 		this._finalSettings = this.move(this._originalSettings, this._changesMadeByDotEnv);

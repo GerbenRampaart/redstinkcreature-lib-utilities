@@ -28,7 +28,12 @@ export type LibUtilitiesOptions = {
  * It depends on AppPackageJsonService and AppConfigService, the module waits for
  * those services to be available using ModuleRef().
  */
-@Module({})
+@Module({
+	imports: [
+		AppLoggerModule,
+		PackageModule
+	]
+})
 export class LibUtilitiesModule implements OnModuleInit, OnApplicationBootstrap, OnApplicationShutdown {
 	public static register(
 		options?: LibUtilitiesOptions,
@@ -61,20 +66,23 @@ export class LibUtilitiesModule implements OnModuleInit, OnApplicationBootstrap,
 	constructor(
 		private readonly l: AppLoggerService,
 		private readonly pj: PackageService,
+		private readonly p: PathsService,
 	) {
 	}
 
 	onApplicationShutdown(signal?: string | undefined) {
-		console.warn(`Application shutdown signal ${signal}`);
+		this.l.info(`APPLICATION SHUTDOWN (signal ${signal})`);
 	}
 	
 	onApplicationBootstrap() {
-		console.warn('Application bootstrap');
+		this.l.info(`APPLICATION BOOTSTRAP`);
 	}
 
 	onModuleInit() {
 		this.l.info(
-			`Loaded ${this.pj.product.pj.name}:${this.pj.product.pj.version}`,
+			`Loaded app: ${this.pj.product.pj.name}:${this.pj.product.pj.version}`,
 		);
+
+		this.p.logPaths(this.l);
 	}
 }

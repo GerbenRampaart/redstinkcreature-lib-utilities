@@ -1,7 +1,7 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
 import { HttpService } from '@nestjs/axios';
-import { type AxiosResponse, AxiosError } from 'axios';
+import { type AxiosResponse, AxiosError, isAxiosError } from 'axios';
 import { lastValueFrom } from 'rxjs';
 import { HttpResult } from './HttpResult.ts';
 import { isNativeError } from 'node:util/types';
@@ -11,6 +11,7 @@ import {
 	type Metadata,
 } from './AxiosRequestConfigWithMetadata.ts';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
+import { hrtime } from 'node:process';
 
 @Injectable({
 	// Transient providers are not shared across consumers.
@@ -33,7 +34,7 @@ export class AppHttpService {
 		http.axiosRef.interceptors.request.use(
 			(cfg: InternalAxiosRequestConfigWithMetadata<unknown>) => {
 				cfg.metadata = cfg.metadata || {};
-				cfg.metadata.start = Deno.hrtime();
+				cfg.metadata.start = hrtime();
 				cfg.metadata.startDate = new Date();
 
 				l.info({
@@ -59,7 +60,7 @@ export class AppHttpService {
 			cfg.metadata.endDate = new Date();
 
 			if (cfg.metadata.start !== undefined) {
-				cfg.metadata.end = process.hrtime(cfg.metadata.start);
+				cfg.metadata.end = hrtime(cfg.metadata.start);
 
 				// (just for reference I'm including the copilot explanation of the next line of code)
 				/*
@@ -141,11 +142,13 @@ export class AppHttpService {
 
 		try {
 			response = await lastValueFrom(
-				this.http.request<TResponseType>(cfg),
+				this.http.request<TResponseType>({
+					...cfg,
+				}),
 			);
 		} catch (err: unknown) {
 			// https://github.com/axios/axios/blob/d844227411263fab39d447442879112f8b0c8de5/README.md?plain=1#L614
-			if (err instanceof AxiosError) {
+			if (isAxiosError(err)) {
 				error = err;
 			} else if (isNativeError(err)) {
 				error = new AxiosError<TResponseType, TBody>(err.message);

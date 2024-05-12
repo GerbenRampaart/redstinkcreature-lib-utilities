@@ -29,11 +29,8 @@ Deno.test({
 	await t.step('Check if level is settable', () => {
 		service.level = 'fatal';
 		assertEquals(service.level, 'fatal');
-	});
-
-	await t.step('Should log json', () => {
-		service.level = 'fatal';
-		assertEquals(service.level, 'fatal');
+		service.level = 'debug';
+		assertEquals(service.level, 'debug');
 	});
 
 	await t.step('Close TestModule', async () => {

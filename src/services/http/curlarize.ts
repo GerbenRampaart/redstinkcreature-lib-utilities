@@ -1,10 +1,16 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 
+/**
+ * This is almost exclusively used for logging (in debug), the curl of the axios
+ * request we're doing, we found that to be very useful.
+ * 
+ * https://www.npmjs.com/package/axios-curlirize?activeTab=code
+ */
 export class CurlHelper {
 	constructor(
 		public cfg: AxiosRequestConfig,
 	) {
-		this.method = this.cfg.method || 'GET';
+		this.method = this.cfg.method ?? 'GET';
 		this.instance = axios.create(cfg);
 	}
 
@@ -34,6 +40,14 @@ export class CurlHelper {
 		return '';
 	}
 
+	/**
+	 * https://gist.github.com/eneko/dc2d8edd9a4b25c5b0725dd123f98b10
+	 * -i Include protocol response headers in the output
+	 * -v Make the operation more talkative
+	 * -L Follow redirects
+	 * -X Specify request command to use
+	 * @returns 
+	 */
 	generateCommand(): string {
 		try {
 			return `curl -i -v -L -X ${this.method.toUpperCase()} "${

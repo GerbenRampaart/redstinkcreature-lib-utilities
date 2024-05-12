@@ -60,15 +60,7 @@ export class PathsService {
 				p: import.meta.filename ?? '?',
 			},
 			{
-				n: '__dirname',
-				p: __dirname,
-			},
-			{
-				n: '__filename',
-				p: __filename,
-			},
-			{
-				n: 'home',
+				n: 'homedir()',
 				p: homedir(),
 			},
 			...this.libPaths.map((p, i) => {
@@ -82,6 +74,8 @@ export class PathsService {
 	}
 
 	public logPaths(l: AppLoggerService): void {
+		l.info(`---------- PATHS ----------`);
 		this.paths.forEach((p) => l.log(`${p.n}: ${p.p}`));
+		l.info(`//-------- PATHS ----------`);
 	}
 }

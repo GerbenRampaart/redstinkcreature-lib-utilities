@@ -1,8 +1,14 @@
 import { type AxiosRequestConfig } from 'axios';
 import { CurlHelper } from './curlarize.ts';
+import { assertEquals } from 'std/assert';
 
-describe('curlarize', () => {
-	it('should be defined', () => {
+Deno.test({
+	name: 'curlarize',
+	permissions: {
+
+	},
+}, async (t: Deno.TestContext) => {
+	await t.step('Create Module', () => {
 		const cfg: AxiosRequestConfig = {
 			url: 'http://test.com/bla',
 			headers: {
@@ -16,7 +22,6 @@ describe('curlarize', () => {
 		);
 
 		const com = c.generateCommand();
-
-		expect(com).toBeDefined();
+		assertEquals(com, 'curl -i -v -L -X GET "http://test.com/bla?bla=bla" -H "Accept:test"');
 	});
 });

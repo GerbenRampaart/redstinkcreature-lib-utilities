@@ -63,7 +63,7 @@ export class HttpResult<TResponseType, TBodyType = unknown> {
 	public get ok() {
 		return (this.response && !this.error &&
 			this.response.status >= 200 &&
-			this.response.status < 300);
+			this.response.status < 300) ?? false;
 	}
 
 	/**
