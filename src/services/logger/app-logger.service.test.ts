@@ -6,7 +6,9 @@ import { assertExists, assertEquals } from 'std/assert';
 Deno.test({
 	name: 'AppLoggerModule',
 	permissions: {
-		read: true
+		read: true,
+		sys: true,
+		env: true,
 	},
 }, async (t: Deno.TestContext) => {
 	let service: AppLoggerService;

@@ -24,7 +24,8 @@ Deno.test({
 	permissions: {
 		read: true,
 		net: true,
-		env: true
+		env: true,
+		sys: true,
 	},
 	sanitizeResources: false,
 	sanitizeOps: false
@@ -48,7 +49,7 @@ Deno.test({
 
 	await t.step('Check simple GET', async () => {
 		const res = await service.request({
-			url: 'https://google.com'
+			url: 'https://google.com',
 		});
 
 		assertEquals(res.ok, true);

@@ -10,6 +10,7 @@ Deno.test({
 	permissions: {
 		read: true,
 		env: true,
+		sys: true,
 	},
 }, async (t: Deno.TestContext) => {
 	const appSchema = z.object({
