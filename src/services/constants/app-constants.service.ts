@@ -6,7 +6,7 @@ export class AppConstantsService {
 		return LOG_LEVEL();
 	}
 
-	public static rawDenoEnv() { 
+	public static rawDenoEnv() {
 		return DENO_ENV();
 	}
 

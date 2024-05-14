@@ -4,16 +4,15 @@ import { PackageService } from './services/package/package.service.ts';
 
 @Controller()
 export class TestController {
-    constructor(
-        private readonly l: AppLoggerService,
-        private readonly p: PackageService
-    ) {
+	constructor(
+		private readonly l: AppLoggerService,
+		private readonly p: PackageService,
+	) {
+	}
 
-    }
-
-    @Get()
-    test() {
-        this.l.info('test route')
-        return 'test';
-    }
+	@Get()
+	test() {
+		this.l.info('test route');
+		return 'test';
+	}
 }

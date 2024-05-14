@@ -4,9 +4,7 @@ import { assertEquals } from 'std/assert';
 
 Deno.test({
 	name: 'curlarize',
-	permissions: {
-
-	},
+	permissions: {},
 }, async (t: Deno.TestContext) => {
 	await t.step('Create Module', () => {
 		const cfg: AxiosRequestConfig = {
@@ -22,6 +20,9 @@ Deno.test({
 		);
 
 		const com = c.generateCommand();
-		assertEquals(com, 'curl -i -v -L -X GET "http://test.com/bla?bla=bla" -H "Accept:test"');
+		assertEquals(
+			com,
+			'curl -i -v -L -X GET "http://test.com/bla?bla=bla" -H "Accept:test"',
+		);
 	});
 });

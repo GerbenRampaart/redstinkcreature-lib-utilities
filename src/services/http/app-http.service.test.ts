@@ -2,6 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { assertEquals, assertExists } from 'std/assert';
 import { AppHttpService } from './app-http.service.ts';
 import { AppHttpModule } from './app-http.module.ts';
+import { AppConfigModule } from '../config/app-config.module.ts';
+import { AppConfigService } from '../config/app-config.service.ts';
+import z from 'zod';
+import { AxiosRequestConfigWithMetadata } from './AxiosRequestConfigWithMetadata.ts';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 /*
 	sanitizeResources: false,
@@ -28,19 +33,32 @@ Deno.test({
 		sys: true,
 	},
 	sanitizeResources: false,
-	sanitizeOps: false
+	sanitizeOps: false,
 }, async (t: Deno.TestContext) => {
 	let service: AppHttpService;
 	let module: TestingModule;
+
+	const appSchema = z.object({
+		HTTPS_PROXY: z.string().optional(),
+	});
+
+	type AppSchemaType = z.infer<typeof appSchema>;
+
+	let configService: AppConfigService<AppSchemaType>;
 
 	await t.step('Create Module', async () => {
 		module = await Test.createTestingModule({
 			imports: [
 				AppHttpModule,
+				AppConfigModule.registerAsync({
+					useDotEnvEnvironment: true,
+					useDotEnvDefaults: false,
+				}),
 			],
 		}).compile();
 
 		service = await module.resolve<AppHttpService>(AppHttpService);
+		configService = module.get(AppConfigService<AppSchemaType>);
 	});
 
 	await t.step('Check if service is defined', () => {
@@ -48,9 +66,22 @@ Deno.test({
 	});
 
 	await t.step('Check simple GET', async () => {
-		const res = await service.request({
+		let o: AxiosRequestConfigWithMetadata<unknown> = {
 			url: 'https://google.com',
-		});
+		};
+
+		const proxy = configService.get('HTTPS_PROXY');
+
+		if (proxy) {
+			o = {
+				...o,
+				httpsAgent: new HttpsProxyAgent(proxy),
+				httpAgent: new HttpsProxyAgent(proxy),
+				proxy: false,
+			};
+		}
+
+		const res = await service.request(o);
 
 		assertEquals(res.ok, true);
 	});
@@ -62,7 +93,7 @@ Deno.test({
 		});
 
 		assertEquals(res.ok, false);
-		assertEquals(res.timedOut, true);		
+		assertEquals(res.timedOut, true);
 	});
 
 	await t.step('Close TestModule', async () => {

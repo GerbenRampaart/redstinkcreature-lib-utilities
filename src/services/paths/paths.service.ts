@@ -12,9 +12,7 @@ export class PathsService {
 			cwd: Deno.cwd(),
 		});
 
-		const product = allProjectPackageJson.find((p) =>
-			p === 'deno.json'
-		);
+		const product = allProjectPackageJson.find((p) => p === 'deno.json');
 
 		// We see the root deno.json as the product deno.json.
 		// If that doesn't exist we're very confused.

@@ -3,7 +3,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 /**
  * This is almost exclusively used for logging (in debug), the curl of the axios
  * request we're doing, we found that to be very useful.
- * 
+ *
  * https://www.npmjs.com/package/axios-curlirize?activeTab=code
  */
 export class CurlHelper {
@@ -46,7 +46,7 @@ export class CurlHelper {
 	 * -v Make the operation more talkative
 	 * -L Follow redirects
 	 * -X Specify request command to use
-	 * @returns 
+	 * @returns
 	 */
 	generateCommand(): string {
 		try {

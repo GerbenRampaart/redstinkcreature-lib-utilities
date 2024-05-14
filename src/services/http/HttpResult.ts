@@ -105,6 +105,7 @@ export class HttpResult<TResponseType, TBodyType = unknown> {
 	}
 
 	public throwIfNotValid(
+		// deno-lint-ignore no-explicit-any
 		schema: z.ZodObject<any>,
 		status: HttpStatus,
 		forceMessage?: string,

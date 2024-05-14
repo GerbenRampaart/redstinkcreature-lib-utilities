@@ -6,8 +6,7 @@ import { AppConstantsService } from '../constants/app-constants.service.ts';
 @Injectable()
 export class AppLoggerService extends PinoLogger {
 	constructor(
-		@Inject(PARAMS_PROVIDER_TOKEN)
-		params: Params,
+		@Inject(PARAMS_PROVIDER_TOKEN) params: Params,
 	) {
 		super(params);
 	}

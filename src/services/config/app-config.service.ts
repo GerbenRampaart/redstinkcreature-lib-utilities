@@ -8,27 +8,32 @@ import { loadSync } from 'dotenv';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
 
 export type RawSetting = {
-	name: string,
-	value: unknown | undefined,
+	name: string;
+	value: unknown | undefined;
 };
 
 @Injectable()
 export class AppConfigService<TSchema extends ProcessEnv> {
 	constructor(
 		private readonly l: AppLoggerService,
-		@Inject('DOTENV_ENVIRONMENT_PATH') public readonly dotEnvEnvironmentPath: string | null,
-		@Inject('DOTENV_DEFAULTS_PATH') public readonly dotEnvDefaultsPath: string | null,
+		@Inject(
+			'DOTENV_ENVIRONMENT_PATH',
+		) public readonly dotEnvEnvironmentPath: string | null,
+		@Inject('DOTENV_DEFAULTS_PATH') public readonly dotEnvDefaultsPath:
+			| string
+			| null,
 		@Inject('ZOD_SCHEMA') public readonly schema?: ProcessEnvZod,
 	) {
 		this.initialize();
 	}
 
-	private map = (r: Record<string, unknown>): RawSetting[] => Object.keys(r).map(key => {
-		return {
-			name: key,
-			value: r[key],
-		}
-	});
+	private map = (r: Record<string, unknown>): RawSetting[] =>
+		Object.keys(r).map((key) => {
+			return {
+				name: key,
+				value: r[key],
+			};
+		});
 
 	private _originalSettings: Record<string, unknown> = {};
 	private _changesMadeByDotEnv: Record<string, unknown> = {};
@@ -55,7 +60,7 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 	/**
 	 * You don't need to call initialize() if you are using the default behaviour since
 	 * this function is also called in the constructor.
-	 * 
+	 *
 	 * Calling initialize() again however somwhere in code will:
 	 * - Take the current content of Deno.env;
 	 * - Apply the dotenvs (if required) as configured in the AppConfigModule.registerAsync.
@@ -65,7 +70,10 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 		this._originalSettings = settings;
 
 		this.loadDotEnvs();
-		this._finalSettings = this.move(this._originalSettings, this._changesMadeByDotEnv);
+		this._finalSettings = this.move(
+			this._originalSettings,
+			this._changesMadeByDotEnv,
+		);
 
 		if (this.schema) {
 			const result = this.schema.safeParse(this._finalSettings);
@@ -74,7 +82,10 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 				throw new Error(result.error.message);
 			} else {
 				this._changesMadeBySchema = result.data;
-				this._finalSettings = this.move(this._finalSettings, this._changesMadeBySchema);
+				this._finalSettings = this.move(
+					this._finalSettings,
+					this._changesMadeBySchema,
+				);
 			}
 		}
 
@@ -82,17 +93,16 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 	}
 
 	private move(
-		originalValues: Record<string, unknown>, 
-		newValues: Record<string, unknown>): 
-		Record<string, unknown> {
-
+		originalValues: Record<string, unknown>,
+		newValues: Record<string, unknown>,
+	): Record<string, unknown> {
 		const result: Record<string, unknown> = {
-			...newValues
+			...newValues,
 		};
 
 		for (const ov of Object.keys(originalValues)) {
 			const ds = newValues[ov];
-			
+
 			// If not found in the newValues, we must use the old value.
 			if (!ds) {
 				result[ov] = originalValues[ov];
@@ -123,7 +133,9 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 		const result = this._finalSettingsMap.find((p) => p.name === key);
 
 		if (!result || result.value === undefined) {
-			throw new Error(`key ${String(key)} not found or value was undefined`);
+			throw new Error(
+				`key ${String(key)} not found or value was undefined`,
+			);
 		}
 
 		return result.value as TSchema[T];

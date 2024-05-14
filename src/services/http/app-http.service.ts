@@ -1,7 +1,7 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
 import { HttpService } from '@nestjs/axios';
-import { type AxiosResponse, AxiosError, isAxiosError } from 'axios';
+import { AxiosError, type AxiosResponse, isAxiosError } from 'axios';
 import { lastValueFrom } from 'rxjs';
 import { HttpResult } from './HttpResult.ts';
 import { isNativeError } from 'node:util/types';
@@ -77,10 +77,12 @@ export class AppHttpService {
 		  Finally, Math.round() is used to round this value to the nearest whole number,
 		  since the time in milliseconds is usually represented as an integer.
 		*/
-				cfg.metadata.elapsed = Math.round(
-					(cfg.metadata.end[0] * 1e3) +
-						(cfg.metadata.end[1] * 1e-6),
-				);
+				if (cfg.metadata.end !== undefined) {
+					cfg.metadata.elapsed = Math.round(
+						(cfg.metadata.end[0] * 1e3) +
+							(cfg.metadata.end[1] * 1e-6),
+					);
+				}
 			}
 
 			this.setContext(cfg.metadata, res);
@@ -150,7 +152,7 @@ export class AppHttpService {
 			// https://github.com/axios/axios/blob/d844227411263fab39d447442879112f8b0c8de5/README.md?plain=1#L614
 			if (isAxiosError(err)) {
 				error = err;
-			} else if (isNativeError(err)) {
+			} else if (isNativeError(err) && err instanceof Error) {
 				error = new AxiosError<TResponseType, TBody>(err.message);
 				error.name = err.name;
 				error.cause = err;

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PackageService } from './package.service.ts';
 import { PackageModule } from './package.module.ts';
-import { assertExists, assertEquals} from 'std/assert';
+import { assertEquals, assertExists } from 'std/assert';
 
 Deno.test({
 	name: 'PackageModule',

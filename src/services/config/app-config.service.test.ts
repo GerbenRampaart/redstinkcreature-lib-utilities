@@ -32,9 +32,9 @@ Deno.test({
 				AppConfigModule.registerAsync<AppSchemaType>({
 					schema: appSchema,
 					useDotEnvEnvironment: AppConstantsService.denoEnv.isTest,
-					useDotEnvDefaults: AppConstantsService.denoEnv.isTest
+					useDotEnvDefaults: AppConstantsService.denoEnv.isTest,
 				}),
-			]
+			],
 		}).compile();
 
 		service = module.get(AppConfigService<AppSchemaType>);

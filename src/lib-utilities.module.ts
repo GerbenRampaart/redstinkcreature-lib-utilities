@@ -1,4 +1,9 @@
-import { Module, OnApplicationBootstrap, OnApplicationShutdown, type OnModuleInit } from '@nestjs/common';
+import {
+	Module,
+	OnApplicationBootstrap,
+	OnApplicationShutdown,
+	type OnModuleInit,
+} from '@nestjs/common';
 import { AppLoggerService } from './services/logger/app-logger.service.ts';
 import { AppConfigService } from './services/config/app-config.service.ts';
 import { PackageService } from './services/package/package.service.ts';
@@ -31,10 +36,11 @@ export type LibUtilitiesOptions = {
 @Module({
 	imports: [
 		AppLoggerModule,
-		PackageModule
-	]
+		PackageModule,
+	],
 })
-export class LibUtilitiesModule implements OnModuleInit, OnApplicationBootstrap, OnApplicationShutdown {
+export class LibUtilitiesModule
+	implements OnModuleInit, OnApplicationBootstrap, OnApplicationShutdown {
 	public static register(
 		options?: LibUtilitiesOptions,
 	) {
@@ -43,7 +49,7 @@ export class LibUtilitiesModule implements OnModuleInit, OnApplicationBootstrap,
 			imports: [
 				AppConfigModule.registerAsync(options?.config),
 				AppLoggerModule,
-				PackageModule
+				PackageModule,
 			],
 			providers: [
 				PackageService,
@@ -58,8 +64,8 @@ export class LibUtilitiesModule implements OnModuleInit, OnApplicationBootstrap,
 				PathsService,
 			],
 			controllers: [
-				TestController
-			]
+				TestController,
+			],
 		};
 	}
 
@@ -73,7 +79,7 @@ export class LibUtilitiesModule implements OnModuleInit, OnApplicationBootstrap,
 	onApplicationShutdown(signal?: string | undefined) {
 		this.l.info(`APPLICATION SHUTDOWN (signal ${signal})`);
 	}
-	
+
 	onApplicationBootstrap() {
 		this.l.info(`APPLICATION BOOTSTRAP`);
 	}
