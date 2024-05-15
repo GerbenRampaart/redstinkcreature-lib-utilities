@@ -11,9 +11,9 @@ import type {
 	ProcessEnv,
 } from './app-config-module.options.ts';
 import { AppConfigService } from './app-config.service.ts';
-import { glob } from 'glob';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
-import { join } from 'node:path';
+import { join } from 'std/path';
+import { existsSync } from 'std/fs';
 
 @Module({})
 export class AppConfigModule implements OnModuleInit {
@@ -99,6 +99,7 @@ export class AppConfigModule implements OnModuleInit {
 	}
 
 	private static async findDotEnvPathByName(ef: string): Promise<string> {
+Deno.readDir()
 		const de = await glob(`**/${ef}`, {
 			ignore: 'node_modules/**',
 			cwd: Deno.cwd(),

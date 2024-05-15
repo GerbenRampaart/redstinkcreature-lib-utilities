@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import { AbstractHttpAdapter, NestFactory } from '@nestjs/core';
 import { LoggerErrorInterceptor } from 'nestjs-pino';
 import { AppLoggerService } from './services/logger/app-logger.service.ts';
@@ -14,7 +15,6 @@ const server = express();
 
 // This casting is necessary because of the following error:
 // Argument of type 'ExpressAdapter' is not assignable to parameter of type 'AbstractHttpAdapter<any, any, any>'.
-// deno-lint-ignore no-explicit-any
 const adapter = new ExpressAdapter(server) as unknown as AbstractHttpAdapter<
 	any,
 	any,
