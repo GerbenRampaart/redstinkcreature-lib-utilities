@@ -1,9 +1,21 @@
-import { assertArrayIncludes } from 'std/assert';
+import { assertArrayIncludes, assertEquals } from 'std/assert';
 import { AppConstantsService } from './app-constants.service.ts';
 
 Deno.test({
-	name: 'AppConstantsService',
+	name: 'AppConstantsService.validDenoEnvs',
 	permissions: {},
 }, () => {
-	assertArrayIncludes<string>(AppConstantsService.validDenoEnvs, ['repl']);
+	assertArrayIncludes<string>(AppConstantsService.validDenoEnvs, [
+		'repl',
+	]);
+});
+
+Deno.test({
+	name: 'AppConstantsService.product',
+	permissions: {
+		read: true,
+	},
+}, async () => {
+	const p = await AppConstantsService.product();
+	assertEquals(p.name, '@redstinkcreature/lib-utilities');
 });

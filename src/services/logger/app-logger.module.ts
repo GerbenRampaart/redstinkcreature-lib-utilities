@@ -4,23 +4,14 @@ import { LoggerModule } from 'nestjs-pino';
 import { IncomingMessage, ServerResponse } from 'node:http';
 import { type ReqId } from 'pino-http';
 import { type PrettyOptions } from 'pino-pretty';
-import { PackageService } from '../package/package.service.ts';
-import { PackageModule } from '../package/package.module.ts';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import { build } from 'pino-pretty';
 
 @Module({
 	imports: [
 		LoggerModule.forRootAsync({
-			imports: [
-				PackageModule,
-			],
-			inject: [
-				PackageService,
-			],
-			useFactory: (
-				pj: PackageService,
-			) => {
+			useFactory: async () => {
+				const p = await AppConstantsService.product();
 				// https://github.com/pinojs/pino-pretty#options
 				const options: PrettyOptions = {
 					colorize: true,
@@ -30,7 +21,7 @@ import { build } from 'pino-pretty';
 				return {
 					pinoHttp: {
 						level: AppConstantsService.rawLogLevel(),
-						name: `${pj.product.pj.name}:${pj.product.pj.version}`,
+						name: `${p.name}:${p.version}`,
 						stream: AppConstantsService.denoEnv.isDebug
 							? build(options)
 							: undefined,

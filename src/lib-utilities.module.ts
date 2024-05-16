@@ -6,13 +6,11 @@ import {
 } from '@nestjs/common';
 import { AppLoggerService } from './services/logger/app-logger.service.ts';
 import { AppConfigService } from './services/config/app-config.service.ts';
-import { PackageService } from './services/package/package.service.ts';
 import { type AppConfigModuleOptions } from './services/config/app-config-module.options.ts';
-import { PathsService } from './services/paths/paths.service.ts';
 import { AppConfigModule } from './services/config/app-config.module.ts';
 import { TestController } from './test.controller.ts';
 import { AppLoggerModule } from './services/logger/app-logger.module.ts';
-import { PackageModule } from './services/package/index.ts';
+import { AppConstantsService } from './services/constants/app-constants.service.ts';
 
 export type LibUtilitiesOptions = {
 	config?: AppConfigModuleOptions;
@@ -36,7 +34,6 @@ export type LibUtilitiesOptions = {
 @Module({
 	imports: [
 		AppLoggerModule,
-		PackageModule,
 	],
 })
 export class LibUtilitiesModule
@@ -49,19 +46,14 @@ export class LibUtilitiesModule
 			imports: [
 				AppConfigModule.registerAsync(options?.config),
 				AppLoggerModule,
-				PackageModule,
 			],
 			providers: [
-				PackageService,
 				AppConfigService,
 				AppLoggerService,
-				PathsService,
 			],
 			exports: [
-				PackageService,
 				AppConfigService,
 				AppLoggerService,
-				PathsService,
 			],
 			controllers: [
 				TestController,
@@ -71,8 +63,6 @@ export class LibUtilitiesModule
 
 	constructor(
 		private readonly l: AppLoggerService,
-		private readonly pj: PackageService,
-		private readonly p: PathsService,
 	) {
 	}
 
@@ -84,11 +74,14 @@ export class LibUtilitiesModule
 		this.l.info(`APPLICATION BOOTSTRAP`);
 	}
 
-	onModuleInit() {
+	async onModuleInit() {
+		const p = await AppConstantsService.product();
 		this.l.info(
-			`Loaded app: ${this.pj.product.pj.name}:${this.pj.product.pj.version}`,
+			`Loaded app: ${p.name}:${p.version}`,
 		);
 
-		this.p.logPaths(this.l);
+		AppConstantsService.paths.forEach((v) => {
+			this.l.info(`${v.n}: ${v.p}`);
+		});
 	}
 }

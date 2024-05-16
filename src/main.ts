@@ -10,6 +10,7 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 // @deno-types=npm:@types/express@4
 import express from 'express';
 import z from 'zod';
+import { AppConstantsService } from './index.ts';
 
 const server = express();
 
@@ -29,8 +30,8 @@ async function bootstrap() {
 					TEST: z.string().default('bla'),
 					HOMMA: z.coerce.number().default(123),
 				}),
-				useDotEnvDefaults: true,
-				useDotEnvEnvironment: true,
+				useDotEnvDefaults: AppConstantsService.denoEnv.isDebug,
+				useDotEnvEnvironment: AppConstantsService.denoEnv.isDebug,
 			},
 		}),
 		adapter,
