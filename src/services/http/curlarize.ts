@@ -17,7 +17,7 @@ export class CurlHelper {
 	private method: string;
 	private instance: AxiosInstance;
 
-	getHeaders() {
+	getHeaders(): string {
 		let curlHeaders = '';
 
 		if (this.cfg.headers) {
@@ -30,7 +30,7 @@ export class CurlHelper {
 		return curlHeaders.trim();
 	}
 
-	getBody() {
+	getBody(): string {
 		const j = JSON.stringify(this.cfg.data);
 
 		if (j) {

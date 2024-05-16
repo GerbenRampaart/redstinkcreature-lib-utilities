@@ -124,8 +124,8 @@ export class AppHttpService {
 
 	public async request<TResponseType, TBody>(
 		cfg: AxiosRequestConfigWithMetadata<TBody>,
-		correlationId = crypto.randomUUID(),
-		requestId = crypto.randomUUID(),
+		correlationId: string = crypto.randomUUID(),
+		requestId: string = crypto.randomUUID(),
 	): Promise<
 		HttpResult<
 			TResponseType,

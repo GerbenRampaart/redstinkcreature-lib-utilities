@@ -60,7 +60,7 @@ export class HttpResult<TResponseType, TBodyType = unknown> {
 	 *  // Your happy path code with result.response available
 	 * }
 	 */
-	public get ok() {
+	public get ok(): boolean {
 		return (this.response && !this.error &&
 			this.response.status >= 200 &&
 			this.response.status < 300) ?? false;

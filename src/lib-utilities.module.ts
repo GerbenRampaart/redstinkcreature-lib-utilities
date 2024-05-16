@@ -1,4 +1,5 @@
 import {
+	DynamicModule,
 	Module,
 	OnApplicationBootstrap,
 	OnApplicationShutdown,
@@ -40,7 +41,7 @@ export class LibUtilitiesModule
 	implements OnModuleInit, OnApplicationBootstrap, OnApplicationShutdown {
 	public static register(
 		options?: LibUtilitiesOptions,
-	) {
+	): DynamicModule {
 		return {
 			module: LibUtilitiesModule,
 			imports: [
