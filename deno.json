@@ -5,7 +5,8 @@
 		"include": [
 			"./src",
 			"./README.md",
-			"deno.json"
+			"deno.json",
+            "mod.ts"
 		]
 	},
 	"exports": "./mod.ts",
