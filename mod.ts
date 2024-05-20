@@ -4,5 +4,3 @@ export * from './src/services/config/index.ts';
 export * from './src/services/http/index.ts';
 export * from './src/services/logger/index.ts';
 export * from './src/services/constants/index.ts';
-
-export import * from '@nestjs/core';
