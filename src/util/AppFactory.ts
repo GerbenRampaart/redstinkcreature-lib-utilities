@@ -34,7 +34,9 @@ export class Factory {
 		return this.app.get(AppLoggerService);
 	}
 
-	public config<TSchema extends Record<string, unknown>>() {
+	public config<TSchema extends Record<string, unknown>>(): AppConfigService<
+		TSchema
+	> {
 		return this.app.get(AppConfigService<TSchema>);
 	}
 }

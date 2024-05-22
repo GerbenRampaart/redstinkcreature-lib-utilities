@@ -13,15 +13,21 @@ export class AppConstantsService {
 	private constructor() {
 	}
 
-	public static rawLogLevel() {
+	public static rawLogLevel(): string {
 		return LOG_LEVEL();
 	}
 
-	public static rawDenoEnv() {
+	public static rawDenoEnv(): string {
 		return DENO_ENV();
 	}
 
-	public static get libUtilitiesConstants() {
+	public static get libUtilitiesConstants(): {
+		headers: {
+			correlationId: string;
+			requestId: string;
+			responseTime: string;
+		};
+	} {
 		return {
 			headers: {
 				correlationId: 'x-correlation-id',
@@ -39,7 +45,13 @@ export class AppConstantsService {
 		return envsArray;
 	}
 
-	public static get denoEnv() {
+	public static get denoEnv(): {
+		isTest: boolean;
+		isProduction: boolean;
+		isDevelopment: boolean;
+		isRepl: boolean;
+		isDebug: boolean;
+	} {
 		const de = this.rawDenoEnv();
 		const isTest = de === 'test';
 		const isProduction = de === 'production';

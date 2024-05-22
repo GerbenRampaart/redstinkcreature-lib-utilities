@@ -4,7 +4,7 @@ import {
 	type ProcessEnv,
 	type ProcessEnvZod,
 } from './app-config-module.options.ts';
-import { loadSync } from 'dotenv';
+import { loadSync } from 'std/dotenv';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
 
 export type RawSetting = {
@@ -41,15 +41,15 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 	private _finalSettings: Record<string, unknown> = {};
 	private _finalSettingsMap: RawSetting[] = [];
 
-	public get changesMadeByDotEnv() {
+	public get changesMadeByDotEnv(): RawSetting[] {
 		return this.map(this._changesMadeByDotEnv);
 	}
 
-	public get originalSettings() {
+	public get originalSettings(): RawSetting[] {
 		return this.map(this._originalSettings);
 	}
 
-	public get changesMadeBySchema() {
+	public get changesMadeBySchema(): RawSetting[] {
 		return this.map(this._changesMadeBySchema);
 	}
 
@@ -129,7 +129,7 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 		return result?.value as TSchema[T];
 	}
 
-	getOrThrow<T extends keyof TSchema>(key: T) {
+	getOrThrow<T extends keyof TSchema>(key: T): TSchema[T] {
 		const result = this._finalSettingsMap.find((p) => p.name === key);
 
 		if (!result || result.value === undefined) {

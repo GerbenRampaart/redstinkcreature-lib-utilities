@@ -10,7 +10,7 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 // @deno-types=npm:@types/express@4
 import express from 'express';
 import z from 'zod';
-import { AppConstantsService } from './index.ts';
+import { AppConstantsService } from './services/constants/app-constants.service.ts';
 
 const server = express();
 
