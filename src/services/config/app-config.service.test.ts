@@ -4,6 +4,8 @@ import { AppConfigModule } from './app-config.module.ts';
 import z from 'zod';
 import { assertEquals, assertExists, assertThrows } from 'std/assert';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
+import { join } from 'std/path';
+import { expandGlob } from 'std/fs';
 
 Deno.test({
 	name: 'AppConfigModule',
@@ -27,6 +29,8 @@ Deno.test({
 	let module: TestingModule;
 
 	await t.step('Create Module', async () => {
+		Deno.env.set('DENO_ENV', 'test');
+		
 		module = await Test.createTestingModule({
 			imports: [
 				AppConfigModule.registerAsync<AppSchemaType>({
@@ -80,6 +84,15 @@ Deno.test({
 	await t.step('should be info', () => {
 		// FROM .env.test
 		assertEquals(service.DENO_ENV, 'test');
+	});
+
+	await t.step('Can find .env.test', async () => {
+		const dotEnvPath = join(Deno.cwd(), '**' , '.env.test');
+		
+		const filesPromise = expandGlob(dotEnvPath);
+		const files = await Array.fromAsync(filesPromise);
+
+		assertEquals(files.length, 1);
 	});
 
 	await t.step('Close TestModule', async () => {

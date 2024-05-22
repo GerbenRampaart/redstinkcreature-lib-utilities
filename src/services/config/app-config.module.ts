@@ -13,7 +13,7 @@ import type {
 import { AppConfigService } from './app-config.service.ts';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
 import { join } from 'std/path';
-import { exists } from 'std/fs';
+import { expandGlob } from 'std/fs';
 
 @Module({})
 export class AppConfigModule implements OnModuleInit {
@@ -99,18 +99,16 @@ export class AppConfigModule implements OnModuleInit {
 	}
 
 	private static async findDotEnvPathByName(ef: string): Promise<string> {
-		const dotEnvPath = join(Deno.cwd(), ef);
+		const dotEnvPath = join(Deno.cwd(), '**' , ef);
+		const filesPromise = expandGlob(dotEnvPath);
+		const files = await Array.fromAsync(filesPromise);
 
-		const ex = await exists(dotEnvPath, {
-			isFile: true,
-		});
-
-		if (!ex) {
+		if (files.length !== 1) {
 			throw new Error(
-				`${ef} not found in the project root. cwd was ${Deno.cwd()}`,
+				`${ef} was found ${files.length} times. Must be 1. (glob used: ${dotEnvPath}})`,
 			);
 		}
 
-		return dotEnvPath;
+		return files[0].path;
 	}
 }
