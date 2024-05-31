@@ -4,3 +4,8 @@ export * from './src/services/config/index.ts';
 export * from './src/services/http/index.ts';
 export * from './src/services/logger/index.ts';
 export * from './src/services/constants/index.ts';
+export * from '@nestjs/core';
+export * from '@nestjs/common';
+export * from '@nestjs/testing';
+export * from '@nestjs/platform-express';
+export * from '@nestjs/axios';

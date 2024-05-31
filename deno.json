@@ -1,6 +1,6 @@
 {
 	"name": "@redstinkcreature/lib-utilities",
-	"version": "0.3.3",
+	"version": "0.4.0",
 	"publish": {
 		"include": [
 			"./src",
@@ -37,10 +37,6 @@
 		"@nestjs/axios": "npm:@nestjs/axios@3",
 		"axios": "npm:axios@1",
 		"https-proxy-agent": "npm:https-proxy-agent@7",
-		"esbuild": "npm:esbuild",
-		"@luca/esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader",
-		"esbuild-plugin-d.ts": "npm:esbuild-plugin-d.ts@1",
-		"esbuild-plugin-node-externals": "npm:esbuild-plugin-node-externals@1",
 		"@nestjs/testing": "npm:@nestjs/testing@10",
 		"supertest": "npm:supertest@7",
 		"std/dotenv": "jsr:@std/dotenv@0.224.0",
