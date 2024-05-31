@@ -12,6 +12,7 @@ import { AppConfigModule } from './services/config/app-config.module.ts';
 import { TestController } from './test.controller.ts';
 import { AppLoggerModule } from './services/logger/app-logger.module.ts';
 import { AppConstantsService } from './services/constants/app-constants.service.ts';
+import { AppHttpModule } from './services/http/app-http.module.ts';
 
 export type LibUtilitiesOptions = {
 	config?: AppConfigModuleOptions;
@@ -47,14 +48,16 @@ export class LibUtilitiesModule
 			imports: [
 				AppConfigModule.registerAsync(options?.config),
 				AppLoggerModule,
+				AppHttpModule
 			],
 			providers: [
 				AppConfigService,
 				AppLoggerService,
 			],
 			exports: [
-				AppConfigService,
-				AppLoggerService,
+				AppConfigModule,
+				AppLoggerModule,
+				AppHttpModule
 			],
 			controllers: [
 				TestController,
