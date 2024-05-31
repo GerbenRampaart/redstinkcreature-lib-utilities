@@ -26,6 +26,7 @@ export class AppConfigModule implements OnModuleInit {
 	}
 
 	onModuleInit() {
+		console.log('APPCONFIGMODULE INIT: ' + Deno.cwd());
 		if (this.cfg.dotEnvDefaultsPath) {
 			this.l.info(`DOTENV file included: ${this.cfg.dotEnvDefaultsPath}`);
 		}
