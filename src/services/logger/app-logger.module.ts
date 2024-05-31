@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { AppLoggerService } from './app-logger.service.ts';
 import { LoggerModule } from 'nestjs-pino';
 import { IncomingMessage, ServerResponse } from 'node:http';
@@ -7,6 +7,7 @@ import { type PrettyOptions } from 'pino-pretty';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import { build } from 'pino-pretty';
 
+@Global()
 @Module({
 	imports: [
 		LoggerModule.forRootAsync({

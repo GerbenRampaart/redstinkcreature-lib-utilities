@@ -3,6 +3,7 @@ import {
 	Module,
 	type OnModuleInit,
 	Provider,
+	Global,
 } from '@nestjs/common';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
@@ -15,6 +16,7 @@ import { AppLoggerModule } from '../logger/app-logger.module.ts';
 import { join } from 'std/path';
 import { expandGlob } from 'std/fs';
 
+@Global()
 @Module({})
 export class AppConfigModule implements OnModuleInit {
 	constructor(
