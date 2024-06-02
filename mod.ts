@@ -9,3 +9,4 @@ export * from '@nestjs/common';
 export * from '@nestjs/testing';
 export * from '@nestjs/platform-express';
 export * from '@nestjs/axios';
+export * from '@nestjs/typeorm';

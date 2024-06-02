@@ -115,13 +115,30 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 	private loadDotEnvs() {
 		const result = loadSync({
 			envPath: this.dotEnvEnvironmentPath,
-			export: true,
+			export: false,
 			allowEmptyValues: true,
 			defaultsPath: this.dotEnvDefaultsPath,
 			examplePath: null,
 		});
 
 		this._changesMadeByDotEnv = result;
+	}
+
+	/**
+	 * By default, both the dotenv and zodschema are applied in-memory to the settings and 
+	 * end up in finalSettings but the process.env is untouched. This function applies the 
+	 * finalsettings to the process.env.
+	 */
+	public copyFinalSettingsToEnv() {
+		for (const obj of this.finalSettingsMap) {
+			if (obj.value === undefined || 
+				obj.value === null
+			) {
+				Deno.env.delete(obj.name);
+			} else {
+				Deno.env.set(obj.name, String(obj.value));
+			}
+		}
 	}
 
 	get<T extends keyof TSchema>(key: T): TSchema[T] | undefined {
