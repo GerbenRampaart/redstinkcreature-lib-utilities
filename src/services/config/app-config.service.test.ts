@@ -6,6 +6,7 @@ import { assertEquals, assertExists, assertThrows } from 'std/assert';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import { join } from 'std/path';
 import { expandGlob } from 'std/fs';
+import { ENV_NAME } from '../constants/ENV.ts';
 
 Deno.test({
 	name: 'AppConfigModule',
@@ -29,17 +30,20 @@ Deno.test({
 	let module: TestingModule;
 
 	await t.step('Create Module', async () => {
-		Deno.env.set('DENO_ENV', 'test');
-		
+		Deno.env.set(ENV_NAME, 'test');
+
 		module = await Test.createTestingModule({
 			imports: [
 				AppConfigModule.registerAsync<AppSchemaType>({
 					schema: appSchema,
-					useDotEnvEnvironment: AppConstantsService.denoEnv.isTest,
-					useDotEnvDefaults: AppConstantsService.denoEnv.isTest,
+					useDotEnvEnvironment: AppConstantsService.env.isTest,
+					useDotEnvDefaults: AppConstantsService.env.isTest,
 				}),
 			],
 		}).compile();
+
+		// Without init(), no lifecycle events are fired, like onModuleInit.
+		await module.init();
 
 		service = module.get(AppConfigService<AppSchemaType>);
 	});
@@ -83,12 +87,12 @@ Deno.test({
 
 	await t.step('should be info', () => {
 		// FROM .env.test
-		assertEquals(service.DENO_ENV, 'test');
+		assertEquals(service.ENV, 'test');
 	});
 
 	await t.step('Can find .env.test', async () => {
-		const dotEnvPath = join(Deno.cwd(), '**' , '.env.test');
-		
+		const dotEnvPath = join(Deno.cwd(), '**', '.env.test');
+
 		const filesPromise = expandGlob(dotEnvPath);
 		const files = await Array.fromAsync(filesPromise);
 

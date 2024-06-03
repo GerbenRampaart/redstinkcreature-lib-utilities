@@ -23,7 +23,7 @@ import { build } from 'pino-pretty';
 					pinoHttp: {
 						level: AppConstantsService.rawLogLevel(),
 						name: `${p.name}:${p.version}`,
-						stream: AppConstantsService.denoEnv.isDebug
+						stream: AppConstantsService.env.isDebug
 							? build(options)
 							: undefined,
 						genReqId: (

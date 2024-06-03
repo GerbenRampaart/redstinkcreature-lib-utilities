@@ -48,7 +48,7 @@ export class LibUtilitiesModule
 			imports: [
 				AppConfigModule.registerAsync(options?.config),
 				AppLoggerModule,
-				AppHttpModule
+				AppHttpModule,
 			],
 			providers: [
 				AppConfigService,
@@ -57,7 +57,7 @@ export class LibUtilitiesModule
 			exports: [
 				AppConfigModule,
 				AppLoggerModule,
-				AppHttpModule
+				AppHttpModule,
 			],
 			controllers: [
 				TestController,

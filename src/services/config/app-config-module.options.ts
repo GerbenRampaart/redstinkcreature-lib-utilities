@@ -25,8 +25,8 @@ export type AppConfigModuleOptions = {
 	useDotEnvDefaults?: boolean;
 
 	/**
-	 * If true, tries to find '.env.<DENO_ENV>' (like .env.development) in cwd() and throws Error if not available.
-	 * If false or undefined, ignores any .env.<DENO_ENV>
+	 * If true, tries to find '.env.<ENV>' (like .env.development) in cwd() and throws Error if not available.
+	 * If false or undefined, ignores any .env.<ENV>
 	 *
 	 * default: undefined
 	 */

@@ -57,6 +57,9 @@ Deno.test({
 			],
 		}).compile();
 
+		// Without init(), no lifecycle events are fired, like onModuleInit.
+		await module.init();
+
 		service = await module.resolve<AppHttpService>(AppHttpService);
 		configService = module.get(AppConfigService<AppSchemaType>);
 	});

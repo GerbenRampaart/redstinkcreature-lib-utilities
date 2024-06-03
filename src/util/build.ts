@@ -1,5 +1,4 @@
-//import deno from '../../deno.json' with { type: 'json' };
-
+/* //import deno from '../../deno.json' with { type: 'json' };
 
 // https://jsr.io/@luca/esbuild-deno-loader
 import * as esbuild from 'esbuild';
@@ -10,8 +9,7 @@ import { nodeExternals } from 'esbuild-plugin-node-externals';
 
 const result = await esbuild.build({
 	plugins: [
-		nodeExternals({
-		}),
+		nodeExternals({}),
 
 		...denoPlugins({
 			loader: 'native',
@@ -23,9 +21,9 @@ const result = await esbuild.build({
 		}),
 		dtsPlugin({
 			tsconfig: {
-				"compilerOptions": {
-					"target": "ESNext",
-					"experimentalDecorators": true,
+				'compilerOptions': {
+					'target': 'ESNext',
+					'experimentalDecorators': true,
 				},
 			},
 			outDir: './lib',
@@ -41,26 +39,27 @@ const result = await esbuild.build({
 	minify: false,
 	format: 'esm',
 	external: [
-		"@nestjs/microservices",
-		"@nestjs/platform-express",
-		"class-validator",
-		"class-transformer",
-		"@nestjs/core",
-		"@nestjs/platform-fastify",
-		"@nestjs/testing"
+		'@nestjs/microservices',
+		'@nestjs/platform-express',
+		'class-validator',
+		'class-transformer',
+		'@nestjs/core',
+		'@nestjs/platform-fastify',
+		'@nestjs/testing',
 	],
 	tsconfigRaw: {
-		"compilerOptions": {
-			"moduleResolution": "NodeNext",
-			"target": "ESNext",
-			"module": "NodeNext",
-			"experimentalDecorators": true,
-			"emitDecoratorMetadata": true,
-			"strict": true
+		'compilerOptions': {
+			'moduleResolution': 'NodeNext',
+			'target': 'ESNext',
+			'module': 'NodeNext',
+			'experimentalDecorators': true,
+			'emitDecoratorMetadata': true,
+			'strict': true,
 		},
-	}
+	},
 });
 
 console.log(result.outputFiles);
 
 await esbuild.stop();
+ */

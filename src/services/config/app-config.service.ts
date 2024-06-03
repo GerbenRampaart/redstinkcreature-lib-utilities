@@ -125,13 +125,14 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 	}
 
 	/**
-	 * By default, both the dotenv and zodschema are applied in-memory to the settings and 
-	 * end up in finalSettings but the process.env is untouched. This function applies the 
+	 * By default, both the dotenv and zodschema are applied in-memory to the settings and
+	 * end up in finalSettings but the process.env is untouched. This function applies the
 	 * finalsettings to the process.env.
 	 */
 	public copyFinalSettingsToEnv() {
 		for (const obj of this.finalSettingsMap) {
-			if (obj.value === undefined || 
+			if (
+				obj.value === undefined ||
 				obj.value === null
 			) {
 				Deno.env.delete(obj.name);
@@ -158,8 +159,8 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 		return result.value as TSchema[T];
 	}
 
-	public get DENO_ENV(): string {
-		return AppConstantsService.rawDenoEnv();
+	public get ENV(): string {
+		return AppConstantsService.rawEnv();
 	}
 
 	public get LOG_LEVEL(): string {

@@ -1,5 +1,5 @@
 import { levelsArray, LOG_LEVEL } from './LOG_LEVEL.ts';
-import { DENO_ENV, envsArray } from './DENO_ENV.ts';
+import { ENV, envsArray } from './ENV.ts';
 import { homedir } from 'node:os';
 import { exists } from 'std/fs';
 import { join } from 'std/path';
@@ -17,8 +17,8 @@ export class AppConstantsService {
 		return LOG_LEVEL();
 	}
 
-	public static rawDenoEnv(): string {
-		return DENO_ENV();
+	public static rawEnv(): string {
+		return ENV();
 	}
 
 	public static get libUtilitiesConstants(): {
@@ -41,18 +41,18 @@ export class AppConstantsService {
 		return levelsArray;
 	}
 
-	public static get validDenoEnvs(): string[] {
+	public static get validEnvs(): string[] {
 		return envsArray;
 	}
 
-	public static get denoEnv(): {
+	public static get env(): {
 		isTest: boolean;
 		isProduction: boolean;
 		isDevelopment: boolean;
 		isRepl: boolean;
 		isDebug: boolean;
 	} {
-		const de = this.rawDenoEnv();
+		const de = this.rawEnv();
 		const isTest = de === 'test';
 		const isProduction = de === 'production';
 		const isDevelopment = de === 'development';
@@ -83,6 +83,10 @@ export class AppConstantsService {
 			{
 				n: 'import.meta.filename',
 				p: import.meta.filename ?? '?',
+			},
+			{
+				n: 'import.meta.url',
+				p: import.meta.url ?? '?',
 			},
 			{
 				n: 'homedir()',

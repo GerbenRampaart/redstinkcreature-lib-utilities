@@ -11,10 +11,9 @@
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "deno",
       "runtimeArgs": [
+        "task",
         "test",
         "--inspect-brk",
-        "--allow-all",
-        "./src/services/config/app-config.service.test.ts"
       ],
       "env": {
         "DENO_ENV": "test"

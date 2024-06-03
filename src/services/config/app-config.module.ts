@@ -1,9 +1,9 @@
 import {
 	type DynamicModule,
+	Global,
 	Module,
 	type OnModuleInit,
 	Provider,
-	Global,
 } from '@nestjs/common';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
@@ -15,6 +15,7 @@ import { AppConfigService } from './app-config.service.ts';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
 import { join } from 'std/path';
 import { expandGlob } from 'std/fs';
+import { LOG_LEVEL_NAME } from '../constants/LOG_LEVEL.ts';
 
 @Global()
 @Module({})
@@ -26,7 +27,27 @@ export class AppConfigModule implements OnModuleInit {
 	}
 
 	onModuleInit() {
-		console.log('APPCONFIGMODULE INIT: ' + Deno.cwd());
+		// Now that the Config module is initialzed, we (may) need to update the special
+		// setting LOG_LEVEL. That is required for the app to function from the
+		// very first moment so if it isn't available, default 'info' assumed.
+		// However it might have been updated by the user supplied Zod schema or the dotenv files.
+		const logLevel = this.cfg.finalSettingsMap.find((s) =>
+			s.name === LOG_LEVEL_NAME
+		);
+
+		if (
+			logLevel !== undefined &&
+			logLevel.value !== AppConstantsService.rawLogLevel()
+		) {
+			this.l.warn(
+				`${LOG_LEVEL_NAME} was ${AppConstantsService.rawLogLevel()} but is set to ${logLevel.value} by Zod or dotenv. Environment and pino will be updated.`,
+			);
+
+			// Note that this might actually throw an exception if the user supplied an unknown log level in the config.
+			this.l.level = logLevel.value as string;
+			Deno.env.set(LOG_LEVEL_NAME, logLevel.value as string);
+		}
+
 		if (this.cfg.dotEnvDefaultsPath) {
 			this.l.info(`DOTENV file included: ${this.cfg.dotEnvDefaultsPath}`);
 		}
@@ -58,7 +79,7 @@ export class AppConfigModule implements OnModuleInit {
 		let dotEnvEnvironmentPath: string | null = null;
 		if (options?.useDotEnvEnvironment) {
 			dotEnvEnvironmentPath = await this.findDotEnvPathByName(
-				`.env.${AppConstantsService.rawDenoEnv()}`,
+				`.env.${AppConstantsService.rawEnv()}`,
 			);
 		}
 
@@ -102,7 +123,7 @@ export class AppConfigModule implements OnModuleInit {
 	}
 
 	private static async findDotEnvPathByName(ef: string): Promise<string> {
-		const dotEnvPath = join(Deno.cwd(), '**' , ef);
+		const dotEnvPath = join(Deno.cwd(), '**', ef);
 		const filesPromise = expandGlob(dotEnvPath);
 		const files = await Array.fromAsync(filesPromise);
 

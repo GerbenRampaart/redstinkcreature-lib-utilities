@@ -21,6 +21,9 @@ Deno.test({
 			],
 		}).compile();
 
+		// Without init(), no lifecycle events are fired, like onModuleInit.
+		await module.init();
+
 		service = module.get<AppLoggerService>(AppLoggerService);
 	});
 
