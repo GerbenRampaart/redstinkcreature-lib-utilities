@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppConfigService } from './app-config.service.ts';
 import { AppConfigModule } from './app-config.module.ts';
 import z from 'zod';
-import { assertEquals, assertExists, assertThrows } from 'std/assert';
+import { assertEquals, assertExists, assertThrows } from '@std/assert';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
-import { join } from 'std/path';
-import { expandGlob } from 'std/fs';
+import { join } from '@std/path';
+import { expandGlob } from '@std/fs';
 import { ENV_NAME } from '../constants/ENV.ts';
 
 Deno.test({

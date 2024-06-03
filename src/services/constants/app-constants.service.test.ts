@@ -1,4 +1,4 @@
-import { assertArrayIncludes, assertEquals } from 'std/assert';
+import { assertArrayIncludes, assertEquals } from '@std/assert';
 import { AppConstantsService } from './app-constants.service.ts';
 
 Deno.test({

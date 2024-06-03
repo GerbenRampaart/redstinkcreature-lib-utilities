@@ -13,8 +13,8 @@ import type {
 } from './app-config-module.options.ts';
 import { AppConfigService } from './app-config.service.ts';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
-import { join } from 'std/path';
-import { expandGlob } from 'std/fs';
+import { join } from '@std/path';
+import { expandGlob } from '@std/fs';
 import { LOG_LEVEL_NAME } from '../constants/LOG_LEVEL.ts';
 
 @Global()

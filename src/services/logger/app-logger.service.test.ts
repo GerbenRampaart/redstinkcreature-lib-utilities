@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppLoggerService } from './app-logger.service.ts';
 import { AppLoggerModule } from './app-logger.module.ts';
-import { assertEquals, assertExists } from 'std/assert';
+import { assertEquals, assertExists } from '@std/assert';
 
 Deno.test({
 	name: 'AppLoggerModule',

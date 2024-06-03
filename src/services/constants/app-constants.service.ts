@@ -1,8 +1,8 @@
 import { levelsArray, LOG_LEVEL } from './LOG_LEVEL.ts';
 import { ENV, envsArray } from './ENV.ts';
 import { homedir } from 'node:os';
-import { exists } from 'std/fs';
-import { join } from 'std/path';
+import { exists } from '@std/fs';
+import { join } from '@std/path';
 
 export interface ProductJson {
 	name: string;

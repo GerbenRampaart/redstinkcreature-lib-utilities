@@ -4,7 +4,7 @@ import {
 	type ProcessEnv,
 	type ProcessEnvZod,
 } from './app-config-module.options.ts';
-import { loadSync } from 'std/dotenv';
+import { loadSync } from '@std/dotenv';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
 
 export type RawSetting = {

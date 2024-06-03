@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { assertEquals, assertExists } from 'std/assert';
+import { assertEquals, assertExists } from '@std/assert';
 import { AppHttpService } from './app-http.service.ts';
 import { AppHttpModule } from './app-http.module.ts';
 import { AppConfigModule } from '../config/app-config.module.ts';
