@@ -123,13 +123,14 @@ export class AppConfigModule implements OnModuleInit {
 	}
 
 	private static async findDotEnvPathByName(ef: string): Promise<string> {
-		const dotEnvPath = join(Deno.cwd(), '**', ef);
+		const root = await AppConstantsService.projectRoot();
+		const dotEnvPath = join(root, '**', ef);
 		const filesPromise = expandGlob(dotEnvPath);
 		const files = await Array.fromAsync(filesPromise);
 
 		if (files.length !== 1) {
 			throw new Error(
-				`${ef} was found ${files.length} times. Must be 1. (glob used: ${dotEnvPath}})`,
+				`${ef} was found ${files.length} times. Must be 1. (glob used: ${dotEnvPath})`,
 			);
 		}
 

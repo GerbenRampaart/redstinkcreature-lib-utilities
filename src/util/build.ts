@@ -13,8 +13,8 @@ const result = await esbuild.build({
 
 		...denoPlugins({
 			loader: 'native',
-			configPath: join(Deno.cwd(), 'deno.json'),
-			lockPath: join(Deno.cwd(), 'deno.lock'),
+			configPath: join(root, 'deno.json'),
+			lockPath: join(root, 'deno.lock'),
 
 			// https://github.com/lucacasonato/esbuild_deno_loader/issues/103
 			nodeModulesDir: true,

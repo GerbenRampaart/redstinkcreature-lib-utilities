@@ -2,9 +2,11 @@ import { build, emptyDir } from "@deno/dnt";
 import deno from '../../../deno.json' with { type: 'json' };
 import { getBunPath } from './getBunPath.ts';
 import { join } from '@std/path';
+import { AppConstantsService } from '../../services/constants/app-constants.service.ts';
 
 const outDir = 'lib';
-const outDirAbs = join(Deno.cwd(), outDir);
+const root = await AppConstantsService.projectRoot();
+const outDirAbs = join(root, outDir);
 
 await emptyDir(outDirAbs);
 

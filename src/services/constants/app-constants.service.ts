@@ -3,6 +3,8 @@ import { ENV, envsArray } from './ENV.ts';
 import { homedir } from 'node:os';
 import { exists } from '@std/fs';
 import { join } from '@std/path';
+import { findUp } from 'find-up-simple';
+import { dirname } from 'node:path';
 
 export interface ProductJson {
 	name: string;
@@ -67,7 +69,7 @@ export class AppConstantsService {
 		};
 	}
 
-	public static get paths(): {
+	public static paths(): {
 		n: string;
 		p: string;
 	}[] {
@@ -75,18 +77,6 @@ export class AppConstantsService {
 			{
 				n: 'cwd',
 				p: Deno.cwd(),
-			},
-			{
-				n: 'import.meta.dirname',
-				p: import.meta.dirname ?? '?',
-			},
-			{
-				n: 'import.meta.filename',
-				p: import.meta.filename ?? '?',
-			},
-			{
-				n: 'import.meta.url',
-				p: import.meta.url ?? '?',
 			},
 			{
 				n: 'homedir()',
@@ -99,7 +89,7 @@ export class AppConstantsService {
 
 	/**
 	 * Will throw Error if:
-	 * - join(Deno.cwd(), 'deno.json') does not exist or not readable
+	 * - join(root, 'deno.json') does not exist or not readable
 	 * - Text from file is not parsable as JSON.
 	 * - JSON does not have a name and version property.
 	 * @returns
@@ -109,14 +99,15 @@ export class AppConstantsService {
 			return this._product;
 		}
 
-		const djPath = join(Deno.cwd(), 'deno.json');
+		const root = await AppConstantsService.projectRoot();
+		const djPath = join(root, 'deno.json');
 		const ex = await exists(djPath, {
 			isFile: true,
 		});
 
 		if (!ex) {
 			throw new Error(
-				`No deno.json found in the project root. cwd was ${Deno.cwd()}`,
+				`No deno.json found in the project root. root was ${root}`,
 			);
 		}
 
@@ -128,8 +119,26 @@ export class AppConstantsService {
 			return dj;
 		} else {
 			throw new Error(
-				`No valid deno.json found in the project root. cwd was ${Deno.cwd()}`,
+				`No valid deno.json found in the project root. root was ${root}`,
 			);
 		}
+	}
+
+	private static _projectRoot: string | undefined;
+
+	public static async projectRoot(): Promise<string> {
+		if (this._projectRoot) {
+			return this._projectRoot;
+		}
+
+		const path = await findUp('deno.json');
+
+		if (!path) {
+			throw new Error(`No deno.json found in the project root.`);
+		}
+
+		this._projectRoot = dirname(path);
+
+		return this._projectRoot;
 	}
 }

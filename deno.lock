@@ -31,6 +31,7 @@
       "npm:axios@1": "npm:axios@1.7.2",
       "npm:code-block-writer@^13.0.1": "npm:code-block-writer@13.0.1",
       "npm:express@4": "npm:express@4.19.2",
+      "npm:find-up-simple@1": "npm:find-up-simple@1.0.0",
       "npm:https-proxy-agent@7": "npm:https-proxy-agent@7.0.4",
       "npm:nestjs-pino@4": "npm:nestjs-pino@4.1.0_@nestjs+common@10.3.9__reflect-metadata@0.2.2__rxjs@7.8.1_pino-http@10.1.0_rxjs@7.8.1",
       "npm:npm-check-updates@latest": "npm:npm-check-updates@16.14.20",
@@ -1146,6 +1147,10 @@
           "statuses": "statuses@2.0.1",
           "unpipe": "unpipe@1.0.0"
         }
+      },
+      "find-up-simple@1.0.0": {
+        "integrity": "sha512-q7Us7kcjj2VMePAa02hDAF6d+MzsdsAWEwYyOpwUtlerRBkOEPBCRZrAV4XfcSN8fHAgaD0hP7miwoay6DCprw==",
+        "dependencies": {}
       },
       "find-up@5.0.0": {
         "integrity": "sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==",
@@ -2971,6 +2976,7 @@
       "npm:@nestjs/testing@10",
       "npm:axios@1",
       "npm:express@4",
+      "npm:find-up-simple@1",
       "npm:https-proxy-agent@7",
       "npm:nestjs-pino@4",
       "npm:pino-http@10",

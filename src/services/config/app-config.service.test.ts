@@ -91,7 +91,8 @@ Deno.test({
 	});
 
 	await t.step('Can find .env.test', async () => {
-		const dotEnvPath = join(Deno.cwd(), '**', '.env.test');
+		const root = await AppConstantsService.projectRoot();
+		const dotEnvPath = join(root, '**', '.env.test');
 
 		const filesPromise = expandGlob(dotEnvPath);
 		const files = await Array.fromAsync(filesPromise);
