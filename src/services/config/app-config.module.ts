@@ -123,8 +123,7 @@ export class AppConfigModule implements OnModuleInit {
 	}
 
 	private static async findDotEnvPathByName(ef: string): Promise<string> {
-		const root = await AppConstantsService.projectRoot();
-		const dotEnvPath = join(root, '**', ef);
+		const dotEnvPath = join(AppConstantsService.projectRoot, '**', ef);
 		const filesPromise = expandGlob(dotEnvPath);
 		const files = await Array.fromAsync(filesPromise);
 

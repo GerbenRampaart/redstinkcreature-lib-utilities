@@ -48,7 +48,8 @@
 		"rxjs": "npm:rxjs@7",
 		"supertest": "npm:supertest@7",
 		"zod": "npm:zod@3",
-		"find-up-simple": "npm:find-up-simple@1"
+		"find-up-simple": "npm:find-up-simple@1",
+		"app-root-path": "npm:app-root-path@3"
 	},
 	"fmt": {
 		"useTabs": true,

@@ -3,8 +3,7 @@ import { ENV, envsArray } from './ENV.ts';
 import { homedir } from 'node:os';
 import { exists } from '@std/fs';
 import { join } from '@std/path';
-import { findUp } from 'find-up-simple';
-import { dirname } from 'node:path';
+import arp from 'app-root-path';
 
 export interface ProductJson {
 	name: string;
@@ -69,7 +68,7 @@ export class AppConstantsService {
 		};
 	}
 
-	public static paths(): {
+	public static get paths(): {
 		n: string;
 		p: string;
 	}[] {
@@ -82,6 +81,10 @@ export class AppConstantsService {
 				n: 'homedir()',
 				p: homedir(),
 			},
+			{
+				n: 'app-root-path',
+				p: arp.path,
+			}
 		];
 	}
 
@@ -99,45 +102,67 @@ export class AppConstantsService {
 			return this._product;
 		}
 
-		const root = await AppConstantsService.projectRoot();
-		const djPath = join(root, 'deno.json');
-		const ex = await exists(djPath, {
+		const djPath = join(AppConstantsService.projectRoot, 'deno.json');
+		const djExists = await exists(djPath, {
 			isFile: true,
 		});
 
-		if (!ex) {
+		const pjPath = join(AppConstantsService.projectRoot, 'package.json');
+		const pjExists = await exists(pjPath, {
+			isFile: true,
+		});
+
+		if (pjExists && djExists) {
 			throw new Error(
-				`No deno.json found in the project root. root was ${root}`,
+				`Both deno.json AND package.json found, that's invalid. Root was ${AppConstantsService.projectRoot}`,
 			);
 		}
 
-		const djText = await Deno.readTextFile(djPath);
-		const dj = JSON.parse(djText);
+		if (!pjExists && !djExists) {
+			throw new Error(
+				`No deno.json OR package.json found in the project root. Root was ${AppConstantsService.projectRoot}`,
+			);
+		}
 
-		if (dj?.name && dj?.version) {
-			this._product = dj as ProductJson;
+		const getProduct = async (p: string): Promise<ProductJson | undefined> => {
+			try {
+				const text = await Deno.readTextFile(p);
+				const j = JSON.parse(text);
+				return (j?.name && j?.version) ? j as ProductJson : undefined;
+			} catch {
+				return undefined;
+			}
+		}
+
+		const pj = await getProduct(pjPath);
+
+		if (pj) {
+			this._product = pj;
+			return pj;
+		}
+
+		const dj = await getProduct(djPath);
+		
+		if (dj) {
+			this._product = dj;
 			return dj;
-		} else {
-			throw new Error(
-				`No valid deno.json found in the project root. root was ${root}`,
-			);
 		}
+
+		throw new Error(
+			`No deno.json OR package.json could be parsed. Root was ${AppConstantsService.projectRoot}`,
+		);
 	}
 
 	private static _projectRoot: string | undefined;
 
-	public static async projectRoot(): Promise<string> {
+	public static get projectRoot(): string {
 		if (this._projectRoot) {
 			return this._projectRoot;
 		}
 
-		const path = await findUp('deno.json');
-
-		if (!path) {
-			throw new Error(`No deno.json found in the project root.`);
-		}
-
-		this._projectRoot = dirname(path);
+		// I have never tested how long the resolve.path of app-root-path takes.
+		// But let's cache it regardless since it never changes during the lifetime of the app.
+		this._projectRoot = arp.path;
 
 		return this._projectRoot;
 	}
