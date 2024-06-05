@@ -3,7 +3,7 @@ import deno from '../../../deno.json' with { type: 'json' };
 import { getBunPath } from './getBunPath.ts';
 import { join } from '@std/path';
 import { AppConstantsService } from '../../services/constants/app-constants.service.ts';
-import { expandGlob } from '@std/fs';
+import { EOL, expandGlob } from '@std/fs';
 
 const outDir = 'lib';
 const outDirAbs = join(AppConstantsService.projectRoot, outDir);
@@ -42,6 +42,14 @@ await build({
 
     files.forEach(async f => {
       await Deno.copyFile(f.path, join(newDotEnvPath, f.name));
-    })
+    });
+
+    await Deno.writeTextFile(join(outDirAbs, '.npmignore'), `/dotenv${EOL}`, {
+      append: true
+    });
+
+    await Deno.writeTextFile(join(outDirAbs, '.npmignore'), `/bun.lockb${EOL}`, {
+      append: true
+    });
   },
 });
