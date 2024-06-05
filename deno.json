@@ -21,7 +21,7 @@
 		"repl": "DENO_ENV=repl deno run --watch --allow-all ./src/util/repl.ts",
 		"build": "deno run --allow-all ./src/util/build.ts",
 		"ncu": "ncu -p deno -u",
-		"npm": "deno run -A ./src/util/build-npm.ts"
+		"npm": "deno run -A ./src/util/npm/build-npm.ts"
 	},
 	"compilerOptions": {
 		"experimentalDecorators": true,
