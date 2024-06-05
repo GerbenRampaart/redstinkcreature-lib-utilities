@@ -23,7 +23,7 @@ await build({
     version: deno.version,
     license: "MIT",
   },
-  importMap: './deno.json',
+  importMap: join(AppConstantsService.projectRoot, 'deno.json'),
   esModule: true,
   scriptModule: 'cjs',
   skipSourceOutput: true,
