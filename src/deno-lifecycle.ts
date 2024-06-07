@@ -1,4 +1,4 @@
-const handler = (e: Event): void => {
+/* const handler = (e: Event): void => {
 	console.log(`got ${e.type} event in event handler (imported)`);
 };
 
@@ -24,3 +24,4 @@ addEventListener('rejectionhandled', (ev) => {
 addEventListener('error', (event) => {
 	console.log('Caught unhandled event:', event.message);
 });
+ */

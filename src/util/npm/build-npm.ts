@@ -11,7 +11,7 @@ const outDirAbs = join(AppConstantsService.projectRoot, outDir);
 await emptyDir(outDirAbs);
 
 await build({
-  entryPoints: ["./mod.ts"],
+  entryPoints: ["./src/main.ts"],
   outDir: outDirAbs,
   shims: {
     deno: true,
@@ -33,6 +33,7 @@ await build({
   async postBuild() {
     await Deno.copyFile("README.md", join(outDirAbs, "README.md"));
 
+    // Select all the .env files from the project root.
     const dotEnvPath = join(AppConstantsService.projectRoot, '**', '.env.*');
 		const filesPromise = expandGlob(dotEnvPath);
 		const files = await Array.fromAsync(filesPromise);
