@@ -11,10 +11,16 @@ const outDirAbs = join(AppConstantsService.projectRoot, outDir);
 await emptyDir(outDirAbs);
 
 await build({
-  entryPoints: ["./src/main.ts"],
+  entryPoints: [
+    // This is the app entry point.
+    "./src/main.ts",
+    // This is the library entry point.
+    "./mod.ts",
+  ],
   outDir: outDirAbs,
   shims: {
     deno: true,
+    crypto: true, // instead of using v4() from uuid
   },
   rootTestDir: "./src",
   packageManager: await getBunPath(),

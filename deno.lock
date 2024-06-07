@@ -16,6 +16,7 @@
       "jsr:@std/path@0.224.0": "jsr:@std/path@0.224.0",
       "jsr:@std/path@^0.218.2": "jsr:@std/path@0.218.2",
       "jsr:@std/path@^0.224.0": "jsr:@std/path@0.224.0",
+      "npm:@deno/shim-deno@~0.18.0": "npm:@deno/shim-deno@0.18.2",
       "npm:@nestjs/axios@3": "npm:@nestjs/axios@3.0.2_@nestjs+common@10.3.9__reflect-metadata@0.2.2__rxjs@7.8.1_axios@1.7.2_rxjs@7.8.1",
       "npm:@nestjs/axios@3.0.2": "npm:@nestjs/axios@3.0.2_@nestjs+common@10.3.9__reflect-metadata@0.2.2__rxjs@7.8.1_axios@1.7.2_rxjs@7.8.1",
       "npm:@nestjs/common@10": "npm:@nestjs/common@10.3.9_reflect-metadata@0.2.2_rxjs@7.8.1",
@@ -28,6 +29,8 @@
       "npm:@ts-morph/bootstrap@0.22": "npm:@ts-morph/bootstrap@0.22.0",
       "npm:@types/express@4": "npm:@types/express@4.17.21",
       "npm:@types/node": "npm:@types/node@18.16.19",
+      "npm:@types/node@^20.9.0": "npm:@types/node@20.14.1",
+      "npm:@types/uuid": "npm:@types/uuid@9.0.8",
       "npm:app-root-path@3": "npm:app-root-path@3.1.0",
       "npm:axios@1": "npm:axios@1.7.2",
       "npm:code-block-writer@^13.0.1": "npm:code-block-writer@13.0.1",
@@ -36,6 +39,7 @@
       "npm:https-proxy-agent@7": "npm:https-proxy-agent@7.0.4",
       "npm:nestjs-pino@4": "npm:nestjs-pino@4.1.0_@nestjs+common@10.3.9__reflect-metadata@0.2.2__rxjs@7.8.1_pino-http@10.1.0_rxjs@7.8.1",
       "npm:npm-check-updates@latest": "npm:npm-check-updates@16.14.20",
+      "npm:picocolors@^1.0.0": "npm:picocolors@1.0.0",
       "npm:pino-http@10": "npm:pino-http@10.1.0",
       "npm:pino-pretty@11": "npm:pino-pretty@11.1.0",
       "npm:pino@9": "npm:pino@9.1.0",
@@ -117,6 +121,17 @@
       "@colors/colors@1.5.0": {
         "integrity": "sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==",
         "dependencies": {}
+      },
+      "@deno/shim-deno-test@0.5.0": {
+        "integrity": "sha512-4nMhecpGlPi0cSzT67L+Tm+GOJqvuk8gqHBziqcUQOarnuIax1z96/gJHCSIz2Z0zhxE6Rzwb3IZXPtFh51j+w==",
+        "dependencies": {}
+      },
+      "@deno/shim-deno@0.18.2": {
+        "integrity": "sha512-oQ0CVmOio63wlhwQF75zA4ioolPvOwAoK0yuzcS5bDC1JUvH3y1GS8xPh8EOpcoDQRU4FTG8OQfxhpR+c6DrzA==",
+        "dependencies": {
+          "@deno/shim-deno-test": "@deno/shim-deno-test@0.5.0",
+          "which": "which@4.0.0"
+        }
       },
       "@gar/promisify@1.1.3": {
         "integrity": "sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==",
@@ -492,6 +507,12 @@
         "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
         "dependencies": {}
       },
+      "@types/node@20.14.1": {
+        "integrity": "sha512-T2MzSGEu+ysB/FkWfqmhV3PLyQlowdptmmgD20C6QxsS8Fmv5SjpZ1ayXaEC0S21/h5UJ9iA6W/5vSNU5l00OA==",
+        "dependencies": {
+          "undici-types": "undici-types@5.26.5"
+        }
+      },
       "@types/qs@6.9.15": {
         "integrity": "sha512-uXHQKES6DQKKCLh441Xv/dwxOq1TVS3JPUMlEqoEglvlhR6Mxnlew/Xq/LRVHpLyk7iK3zODe1qYHIMltO7XGg==",
         "dependencies": {}
@@ -518,6 +539,10 @@
           "@types/node": "@types/node@18.16.19",
           "@types/send": "@types/send@0.17.4"
         }
+      },
+      "@types/uuid@9.0.8": {
+        "integrity": "sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==",
+        "dependencies": {}
       },
       "abbrev@1.1.1": {
         "integrity": "sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==",
@@ -1580,6 +1605,10 @@
         "integrity": "sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==",
         "dependencies": {}
       },
+      "isexe@3.1.1": {
+        "integrity": "sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ==",
+        "dependencies": {}
+      },
       "iterare@1.2.1": {
         "integrity": "sha512-RKYVTCjAnRthyJes037NX/IiqeidgN1xc3j1RjFfECFp28A1GVwK9nA+i0rJPaHqSZwygLzRnFlzUuHFoWWy+Q==",
         "dependencies": {}
@@ -2159,6 +2188,10 @@
       },
       "path-type@4.0.0": {
         "integrity": "sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==",
+        "dependencies": {}
+      },
+      "picocolors@1.0.0": {
+        "integrity": "sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==",
         "dependencies": {}
       },
       "picomatch@2.3.1": {
@@ -2800,6 +2833,10 @@
           "@lukeed/csprng": "@lukeed/csprng@1.1.0"
         }
       },
+      "undici-types@5.26.5": {
+        "integrity": "sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==",
+        "dependencies": {}
+      },
       "unique-filename@2.0.1": {
         "integrity": "sha512-ODWHtkkdx3IAR+veKxFV+VBkUMcN+FaqzUUd7IZzt+0zhDZFPFxhlqwPF3YQvMHx1TD0tdgYl+kuPnJ8E6ql7A==",
         "dependencies": {
@@ -2903,6 +2940,12 @@
           "isexe": "isexe@2.0.0"
         }
       },
+      "which@4.0.0": {
+        "integrity": "sha512-GlaYyEb07DPxYCKhKzplCWBJtvxZcZMrL+4UkrTSJHHPyZU4mYYTv3qaOe77H7EODLSSopAUFAc6W8U4yqvscg==",
+        "dependencies": {
+          "isexe": "isexe@3.1.1"
+        }
+      },
       "wide-align@1.1.5": {
         "integrity": "sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==",
         "dependencies": {
@@ -2985,6 +3028,7 @@
       "npm:find-up-simple@1",
       "npm:https-proxy-agent@7",
       "npm:nestjs-pino@4",
+      "npm:npm-check-updates@latest",
       "npm:pino-http@10",
       "npm:pino-pretty@11",
       "npm:pino@9",

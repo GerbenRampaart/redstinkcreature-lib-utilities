@@ -49,7 +49,8 @@
 		"supertest": "npm:supertest@7",
 		"zod": "npm:zod@3",
 		"find-up-simple": "npm:find-up-simple@1",
-		"app-root-path": "npm:app-root-path@3"
+		"app-root-path": "npm:app-root-path@3",
+		"npm-check-updates": "npm:npm-check-updates@latest"
 	},
 	"fmt": {
 		"useTabs": true,
