@@ -1,5 +1,4 @@
-import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
-
+import axios, { type AxiosRequestConfig, type AxiosInstance } from 'axios';
 /**
  * This is almost exclusively used for logging (in debug), the curl of the axios
  * request we're doing, we found that to be very useful.
@@ -50,9 +49,8 @@ export class CurlHelper {
 	 */
 	generateCommand(): string {
 		try {
-			return `curl -i -v -L -X ${this.method.toUpperCase()} "${
-				this.instance.getUri(this.cfg)
-			}" ${this.getHeaders()} ${this.getBody()}`
+			return `curl -i -v -L -X ${this.method.toUpperCase()} "${this.instance.getUri(this.cfg)
+				}" ${this.getHeaders()} ${this.getBody()}`
 				.trim()
 				.replace(/\s{2,}/g, ' ');
 		} catch (err: unknown) {

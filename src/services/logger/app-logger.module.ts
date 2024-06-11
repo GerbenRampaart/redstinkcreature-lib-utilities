@@ -1,11 +1,10 @@
-import { Global, Module } from '@nestjs/common';
 import { AppLoggerService } from './app-logger.service.ts';
-import { LoggerModule } from 'nestjs-pino';
 import { IncomingMessage, ServerResponse } from 'node:http';
-import { type ReqId } from 'pino-http';
-import { type PrettyOptions } from 'pino-pretty';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
-import { build } from 'pino-pretty';
+import { LoggerModule } from "nestjs-pino";
+import { Global, Module } from '@nestjs/common';
+import { type PrettyOptions, build } from 'pino-pretty';
+import { type ReqId } from 'pino-http';
 
 @Global()
 @Module({
@@ -64,4 +63,4 @@ import { build } from 'pino-pretty';
 		AppLoggerService,
 	],
 })
-export class AppLoggerModule {}
+export class AppLoggerModule { }

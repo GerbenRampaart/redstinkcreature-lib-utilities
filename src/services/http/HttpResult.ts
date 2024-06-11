@@ -1,9 +1,8 @@
-import { AxiosError, type AxiosResponse } from 'axios';
 import { type AxiosRequestConfigWithMetadata } from './AxiosRequestConfigWithMetadata.ts';
-import { HttpException, HttpStatus } from '@nestjs/common';
 import { CurlHelper } from './curlarize.ts';
-import { z } from 'zod';
-
+import { type AxiosError, type AxiosResponse } from 'axios';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import z from 'zod';
 /*
 
 | ERR_BAD_OPTION_VALUE | Invalid or unsupported value provided in axios configuration. |
@@ -105,7 +104,6 @@ export class HttpResult<TResponseType, TBodyType = unknown> {
 	}
 
 	public throwIfNotValid(
-		// deno-lint-ignore no-explicit-any
 		schema: z.ZodObject<any>,
 		status: HttpStatus,
 		forceMessage?: string,

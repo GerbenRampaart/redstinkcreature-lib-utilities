@@ -1,6 +1,5 @@
-import { z } from 'zod';
+import z from 'zod';
 
-// deno-lint-ignore no-explicit-any
 export type ProcessEnvZod = z.ZodObject<Record<string, any>>;
 export type ProcessEnv = z.infer<ProcessEnvZod>;
 

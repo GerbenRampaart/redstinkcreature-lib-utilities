@@ -1,18 +1,12 @@
-import {
-	DynamicModule,
-	Module,
-	OnApplicationBootstrap,
-	OnApplicationShutdown,
-	type OnModuleInit,
-} from '@nestjs/common';
 import { AppLoggerService } from './services/logger/app-logger.service.ts';
 import { AppConfigService } from './services/config/app-config.service.ts';
 import { type AppConfigModuleOptions } from './services/config/app-config-module.options.ts';
 import { AppConfigModule } from './services/config/app-config.module.ts';
-import { TestController } from './test.controller.ts';
+import { LibUtilitiesController } from './lib-utilities.controller.ts';
 import { AppLoggerModule } from './services/logger/app-logger.module.ts';
 import { AppConstantsService } from './services/constants/app-constants.service.ts';
 import { AppHttpModule } from './services/http/app-http.module.ts';
+import { Module, type OnModuleInit, type OnApplicationBootstrap, type OnApplicationShutdown, type DynamicModule } from '@nestjs/common';
 
 export type LibUtilitiesOptions = {
 	config?: AppConfigModuleOptions;
@@ -23,7 +17,7 @@ export type LibUtilitiesOptions = {
  * services which we have to be careful about depending on each other. Once loaded,
  * the SharedModule, or any module, can depend on the AppUtilitiesModule.
  *
- * The AppPackageService provides information about the app in the form of deno.json
+ * The AppPackageService provides information about the app in the form of package.json
  * information and other pathing data. It depends on nothing.
  *
  * The ConfigModule and sebsequent more opinionated SharedConfigModule provides generic
@@ -60,7 +54,7 @@ export class LibUtilitiesModule
 				AppHttpModule,
 			],
 			controllers: [
-				TestController,
+				LibUtilitiesController,
 			],
 		};
 	}

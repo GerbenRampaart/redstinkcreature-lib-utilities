@@ -1,21 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { AppConfigService } from './app-config.service.ts';
 import { AppConfigModule } from './app-config.module.ts';
-import z from 'zod';
-import { assertEquals, assertExists, assertThrows } from '@std/assert';
+import { test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
-import { join } from '@std/path';
-import { expandGlob } from '@std/fs';
 import { ENV_NAME } from '../constants/ENV.ts';
+import z from 'zod';
+import { Test, TestingModule } from '@nestjs/testing';
+import { glob } from 'glob';
+import { join } from 'node:path';
 
-Deno.test({
-	name: 'AppConfigModule',
-	permissions: {
-		read: true,
-		env: true,
-		sys: true,
-	},
-}, async (t: Deno.TestContext) => {
+test('AppConfigModule', async () => {
 	const appSchema = z.object({
 		TEST: z.string().default('bla'),
 		TEST_NUMBER: z.coerce.number().default(123),
@@ -29,8 +22,8 @@ Deno.test({
 	let service: AppConfigService<AppSchemaType>;
 	let module: TestingModule;
 
-	await t.step('Create Module', async () => {
-		Deno.env.set(ENV_NAME, 'test');
+	beforeEach(async () => {
+		process.env[ENV_NAME] = 'test';
 
 		module = await Test.createTestingModule({
 			imports: [
@@ -48,58 +41,61 @@ Deno.test({
 		service = module.get(AppConfigService<AppSchemaType>);
 	});
 
-	await t.step('Check if service is defined', () => {
-		assertExists(service);
+	afterEach(async () => {
+		await module.close();
 	});
 
-	await t.step('Should be bla', () => {
+	test('Check if service is defined', () => {
+		expect(service).toBeDefined();
+	});
+
+	test('Should be bla', () => {
 		// FROM default value out provided zod schema (top of this code file).
-		assertEquals(service.get('TEST'), 'bla');
+		expect(service.get('TEST')).toBe('bla');
 	});
 
-	await t.step(
+	test(
 		'should be 123 because it was optional and defaulted to string "123" and then transformed to a number',
 		() => {
 			// FROM default value out provided zod schema (top of this code file).
-			assertEquals(service.get('TEST_NUMBER'), 123);
+			expect(service.get('TEST_NUMBER')).toBe(123);
 		},
 	);
 
-	await t.step('should be undefined because is was optional', () => {
+	test('should be undefined because is was optional', () => {
 		// FROM default value out provided zod schema (top of this code file).
-		assertEquals(service.get('TEST_NULLABLE_NUMBER'), undefined);
+		expect(service.get('TEST_NULLABLE_NUMBER')).toBeUndefined();
 	});
 
-	await t.step('should be undefined', () => {
+	test('should be undefined', () => {
 		// FROM default value out provided zod schema (top of this code file).
-		assertEquals(service.get('UNDEFINED'), undefined);
+		expect(service.get('UNDEFINED')).toBeUndefined();
 	});
 
-	await t.step('should be debug', () => {
+	test('should be debug', () => {
 		// FROM .env.test
-		assertEquals(service.LOG_LEVEL, 'debug');
+		expect(service.LOG_LEVEL).toBe('debug');
 	});
 
-	await t.step('should throw exception', () => {
+	test('should throw exception', () => {
 		// FROM .env.test
-		assertThrows(() => service.getOrThrow('UNDEFINED'));
+		expect(() => service.getOrThrow('UNDEFINED')).toThrow();
 	});
 
-	await t.step('should be info', () => {
+	test('should be info', () => {
 		// FROM .env.test
-		assertEquals(service.ENV, 'test');
+		expect(service.ENV).toBe('test');
 	});
 
-	await t.step('Can find .env.test', async () => {
-		const dotEnvPath = join(AppConstantsService.projectRoot, '**', '.env.test');
+	test('Can find .env.test', async () => {
+		const dotEnvPath = join(
+			AppConstantsService.projectRoot,
+			'**',
+			'.env.test',
+		);
 
-		const filesPromise = expandGlob(dotEnvPath);
-		const files = await Array.fromAsync(filesPromise);
+		const files = await glob(dotEnvPath);
 
-		assertEquals(files.length, 1);
-	});
-
-	await t.step('Close TestModule', async () => {
-		await module.close();
+		expect(files.length).toBe(1);
 	});
 });

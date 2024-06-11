@@ -1,9 +1,10 @@
 import { levelsArray, LOG_LEVEL } from './LOG_LEVEL.ts';
 import { ENV, envsArray } from './ENV.ts';
 import { homedir } from 'node:os';
-import { exists } from '@std/fs';
-import { join } from '@std/path';
-import arp from 'app-root-path';
+import { join } from 'node:path';
+import { access, constants, readFile
+ } from 'node:fs/promises';
+ import { path } from 'app-root-path';
 
 export interface ProductJson {
 	name: string;
@@ -74,8 +75,8 @@ export class AppConstantsService {
 	}[] {
 		return [
 			{
-				n: 'cwd',
-				p: Deno.cwd(),
+				n: 'process.cwd()',
+				p: process.cwd() ?? '?',
 			},
 			{
 				n: 'homedir()',
@@ -83,8 +84,8 @@ export class AppConstantsService {
 			},
 			{
 				n: 'app-root-path',
-				p: arp.path,
-			}
+				p: path,
+			},
 		];
 	}
 
@@ -92,7 +93,7 @@ export class AppConstantsService {
 
 	/**
 	 * Will throw Error if:
-	 * - join(root, 'deno.json') does not exist or not readable
+	 * - join(root, 'package.json') does not exist or not readable
 	 * - Text from file is not parsable as JSON.
 	 * - JSON does not have a name and version property.
 	 * @returns
@@ -102,54 +103,34 @@ export class AppConstantsService {
 			return this._product;
 		}
 
-		const djPath = join(AppConstantsService.projectRoot, 'deno.json');
-		const djExists = await exists(djPath, {
-			isFile: true,
-		});
-
 		const pjPath = join(AppConstantsService.projectRoot, 'package.json');
-		const pjExists = await exists(pjPath, {
-			isFile: true,
-		});
+		const exists = await access(pjPath, constants.F_OK)
+           .then(() => true)
+           .catch(() => false);
 
-		if (pjExists && djExists) {
-			throw new Error(
-				`Both deno.json AND package.json found, that's invalid. Root was ${AppConstantsService.projectRoot}`,
-			);
-		}
+		   if (!exists) {
+			throw new Error(`No package.json found in ${AppConstantsService.projectRoot}`);
+		   }
 
-		if (!pjExists && !djExists) {
-			throw new Error(
-				`No deno.json OR package.json found in the project root. Root was ${AppConstantsService.projectRoot}`,
-			);
-		}
+				const text = await readFile(pjPath, { encoding: 'utf-8' });
+				const j = JSON.parse(text) as ProductJson;
 
-		const getProduct = async (p: string): Promise<ProductJson | undefined> => {
-			try {
-				const text = await Deno.readTextFile(p);
-				const j = JSON.parse(text);
-				return (j?.name && j?.version) ? j as ProductJson : undefined;
-			} catch {
-				return undefined;
-			}
-		}
+				if (j.name === undefined || j.version === undefined) {
+					throw new Error(`${pjPath} not a valid product json. Name or version undefined.`);
+				}
 
-		const pj = await getProduct(pjPath);
+				const pj = {
+					name: j.name,
+					version: j.version,
+				}
 
 		if (pj) {
 			this._product = pj;
 			return pj;
 		}
 
-		const dj = await getProduct(djPath);
-		
-		if (dj) {
-			this._product = dj;
-			return dj;
-		}
-
 		throw new Error(
-			`No deno.json OR package.json could be parsed. Root was ${AppConstantsService.projectRoot}`,
+			`No package.json could be parsed. Root was ${AppConstantsService.projectRoot}`,
 		);
 	}
 
@@ -162,8 +143,17 @@ export class AppConstantsService {
 
 		// I have never tested how long the resolve.path of app-root-path takes.
 		// But let's cache it regardless since it never changes during the lifetime of the app.
-		this._projectRoot = arp.path;
+
+		this._projectRoot = path;
 
 		return this._projectRoot;
+	}
+
+	public static get libraryOutDir() {
+		return 'lib';
+	}
+
+	public static get npmOutDir() {
+		return 'npm';
 	}
 }

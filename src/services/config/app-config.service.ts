@@ -1,11 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import {
 	type ProcessEnv,
 	type ProcessEnvZod,
 } from './app-config-module.options.ts';
-import { loadSync } from '@std/dotenv';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
+import { Injectable, Inject } from '@nestjs/common';
+import { config } from 'dotenv';
 
 export type RawSetting = {
 	name: string;
@@ -19,9 +19,6 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 		@Inject(
 			'DOTENV_ENVIRONMENT_PATH',
 		) public readonly dotEnvEnvironmentPath: string | null,
-		@Inject('DOTENV_DEFAULTS_PATH') public readonly dotEnvDefaultsPath:
-			| string
-			| null,
 		@Inject('ZOD_SCHEMA') public readonly schema?: ProcessEnvZod,
 	) {
 		this.initialize();
@@ -62,11 +59,11 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 	 * this function is also called in the constructor.
 	 *
 	 * Calling initialize() again however somwhere in code will:
-	 * - Take the current content of Deno.env;
+	 * - Take the current content of process.env;
 	 * - Apply the dotenvs (if required) as configured in the AppConfigModule.registerAsync.
 	 * - Apply the schema (if provided) as configured in the AppConfigModule.registerAsync.
 	 */
-	public initialize(settings: Record<string, string> = Deno.env.toObject()) {
+	public initialize(settings: Record<string, string | undefined> = process.env) {
 		this._originalSettings = settings;
 
 		this.loadDotEnvs();
@@ -113,15 +110,17 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 	}
 
 	private loadDotEnvs() {
-		const result = loadSync({
-			envPath: this.dotEnvEnvironmentPath,
-			export: false,
-			allowEmptyValues: true,
-			defaultsPath: this.dotEnvDefaultsPath,
-			examplePath: null,
+		if (this.dotEnvEnvironmentPath) {
+		const result = config({
+			debug: AppConstantsService.env.isDebug,
+			override: true,
+			path: this.dotEnvEnvironmentPath,
 		});
 
-		this._changesMadeByDotEnv = result;
+		this._changesMadeByDotEnv = result.parsed ?? {};
+	}
+
+	
 	}
 
 	/**
@@ -135,9 +134,9 @@ export class AppConfigService<TSchema extends ProcessEnv> {
 				obj.value === undefined ||
 				obj.value === null
 			) {
-				Deno.env.delete(obj.name);
+				delete process.env[obj.name];
 			} else {
-				Deno.env.set(obj.name, String(obj.value));
+				process.env[obj.name] = String(obj.value);
 			}
 		}
 	}

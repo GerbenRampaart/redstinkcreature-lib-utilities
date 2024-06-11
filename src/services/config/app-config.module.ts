@@ -1,10 +1,4 @@
-import {
-	type DynamicModule,
-	Global,
-	Module,
-	type OnModuleInit,
-	Provider,
-} from '@nestjs/common';
+
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
 import type {
@@ -13,9 +7,10 @@ import type {
 } from './app-config-module.options.ts';
 import { AppConfigService } from './app-config.service.ts';
 import { AppLoggerModule } from '../logger/app-logger.module.ts';
-import { join } from '@std/path';
-import { expandGlob } from '@std/fs';
 import { LOG_LEVEL_NAME } from '../constants/LOG_LEVEL.ts';
+import { Global, Module, type OnModuleInit, type DynamicModule, type Provider } from '@nestjs/common';
+import { join } from 'node:path';
+import { glob } from 'glob';
 
 @Global()
 @Module({})
@@ -45,11 +40,7 @@ export class AppConfigModule implements OnModuleInit {
 
 			// Note that this might actually throw an exception if the user supplied an unknown log level in the config.
 			this.l.level = logLevel.value as string;
-			Deno.env.set(LOG_LEVEL_NAME, logLevel.value as string);
-		}
-
-		if (this.cfg.dotEnvDefaultsPath) {
-			this.l.info(`DOTENV file included: ${this.cfg.dotEnvDefaultsPath}`);
+			process.env[LOG_LEVEL_NAME] = logLevel.value as string
 		}
 
 		if (this.cfg.dotEnvEnvironmentPath) {
@@ -83,21 +74,11 @@ export class AppConfigModule implements OnModuleInit {
 			);
 		}
 
-		let dotEnvDefaultsPath: string | null = null;
-		if (options?.useDotEnvDefaults) {
-			dotEnvDefaultsPath = await this.findDotEnvPathByName(
-				`.env.defaults`,
-			);
-		}
 
 		const providers: Provider[] = [
 			{
 				provide: 'DOTENV_ENVIRONMENT_PATH',
 				useValue: dotEnvEnvironmentPath,
-			},
-			{
-				provide: 'DOTENV_DEFAULTS_PATH',
-				useValue: dotEnvDefaultsPath,
 			},
 			{
 				provide: 'ZOD_SCHEMA',
@@ -124,8 +105,12 @@ export class AppConfigModule implements OnModuleInit {
 
 	private static async findDotEnvPathByName(ef: string): Promise<string> {
 		const dotEnvPath = join(AppConstantsService.projectRoot, '**', ef);
-		const filesPromise = expandGlob(dotEnvPath);
-		const files = await Array.fromAsync(filesPromise);
+		const files = await glob(dotEnvPath, {
+			ignore: [
+				join(AppConstantsService.projectRoot, AppConstantsService.libraryOutDir),
+				join(AppConstantsService.projectRoot, AppConstantsService.npmOutDir),
+			]
+		});
 
 		if (files.length !== 1) {
 			throw new Error(
@@ -133,6 +118,6 @@ export class AppConfigModule implements OnModuleInit {
 			);
 		}
 
-		return files[0].path;
+		return files[0];
 	}
 }

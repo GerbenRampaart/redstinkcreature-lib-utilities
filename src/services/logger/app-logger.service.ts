@@ -1,7 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { type Params, PARAMS_PROVIDER_TOKEN, PinoLogger } from 'nestjs-pino';
-import { type LevelWithSilent } from 'pino';
+
 import { AppConstantsService } from '../constants/app-constants.service.ts';
+import { PinoLogger, type Params, PARAMS_PROVIDER_TOKEN } from 'nestjs-pino';
+import { Injectable, Inject } from '@nestjs/common';
+import { type LevelWithSilent } from 'pino';
 
 @Injectable()
 export class AppLoggerService extends PinoLogger {
@@ -14,8 +15,7 @@ export class AppLoggerService extends PinoLogger {
 	public set level(lvl: string) {
 		if (!AppConstantsService.validLogLevels.includes(lvl)) {
 			throw new Error(
-				`Tried to set LogLevel ${lvl}. Supported levels: ${
-					AppConstantsService.validLogLevels.join(', ')
+				`Tried to set LogLevel ${lvl}. Supported levels: ${AppConstantsService.validLogLevels.join(', ')
 				}`,
 			);
 		}

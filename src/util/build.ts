@@ -1,23 +1,12 @@
-/* //import deno from '../../deno.json' with { type: 'json' };
 
-// https://jsr.io/@luca/esbuild-deno-loader
 import * as esbuild from 'esbuild';
-import { denoPlugins } from '@luca/esbuild-deno-loader';
-import { join } from 'std/path';
 import { dtsPlugin } from 'esbuild-plugin-d.ts';
 import { nodeExternals } from 'esbuild-plugin-node-externals';
 
 const result = await esbuild.build({
 	plugins: [
-		nodeExternals({}),
+		nodeExternals({
 
-		...denoPlugins({
-			loader: 'native',
-			configPath: join(root, 'deno.json'),
-			lockPath: join(root, 'deno.lock'),
-
-			// https://github.com/lucacasonato/esbuild_deno_loader/issues/103
-			nodeModulesDir: true,
 		}),
 		dtsPlugin({
 			tsconfig: {
@@ -29,23 +18,21 @@ const result = await esbuild.build({
 			outDir: './lib',
 		}),
 	],
-	platform: 'browser',
+	platform: 'node',
 	target: 'esnext',
 	sourcemap: true,
 	treeShaking: true,
-	entryPoints: ['./src/main.ts'],
-	outfile: './lib/nestjs.js',
+	
+	entryPoints: ['./src/util/api/bootstrap.ts'],
+	outfile: './lib/lib-utilities.js',
 	bundle: true,
 	minify: false,
-	format: 'esm',
+	format: 'cjs',
 	external: [
 		'@nestjs/microservices',
-		'@nestjs/platform-express',
 		'class-validator',
 		'class-transformer',
-		'@nestjs/core',
-		'@nestjs/platform-fastify',
-		'@nestjs/testing',
+		'@nestjs/websockets'
 	],
 	tsconfigRaw: {
 		'compilerOptions': {
@@ -59,7 +46,4 @@ const result = await esbuild.build({
 	},
 });
 
-console.log(result.outputFiles);
-
 await esbuild.stop();
- */

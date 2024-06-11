@@ -1,28 +1,24 @@
-// deno-lint-ignore-file no-explicit-any
-import { AbstractHttpAdapter, NestFactory } from '@nestjs/core';
-import { LoggerErrorInterceptor } from 'nestjs-pino';
-import { AppLoggerService } from './services/logger/app-logger.service.ts';
-import { LibUtilitiesModule } from './lib-utilities.module.ts';
-
-import './deno-lifecycle.ts';
+import { AppLoggerService } from '../../services/logger/app-logger.service.ts';
+import { LibUtilitiesModule } from '../../lib-utilities.module.ts';
+import { AppConstantsService } from '../../services/constants/app-constants.service.ts';
+import express, { type Express, type Request, type Response } from "express";
+import { NestFactory, AbstractHttpAdapter } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
-
-// @deno-types=npm:@types/express@4
-import express from 'express';
+import { type INestApplication } from '@nestjs/common';
 import z from 'zod';
-import { AppConstantsService } from './services/constants/app-constants.service.ts';
+import { LoggerErrorInterceptor } from 'nestjs-pino';
 
 const server = express();
 
 // This casting is necessary because of the following error:
 // Argument of type 'ExpressAdapter' is not assignable to parameter of type 'AbstractHttpAdapter<any, any, any>'.
 const adapter = new ExpressAdapter(server) as unknown as AbstractHttpAdapter<
-	any,
-	any,
-	any
+	Express,
+	Request,
+	Response
 >;
 
-async function bootstrap() {
+export async function api(): Promise<INestApplication<Express>> {
 	const app = await NestFactory.create(
 		LibUtilitiesModule.register({
 			config: {
@@ -45,7 +41,5 @@ async function bootstrap() {
 	app.useLogger(l);
 	app.useGlobalInterceptors(new LoggerErrorInterceptor());
 
-	await app.listen(3000);
+	return app;
 }
-
-bootstrap();

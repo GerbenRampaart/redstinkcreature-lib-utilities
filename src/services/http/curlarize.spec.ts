@@ -1,12 +1,9 @@
 import { type AxiosRequestConfig } from 'axios';
 import { CurlHelper } from './curlarize.ts';
-import { assertEquals } from 'std/assert';
+import { expect, test } from 'bun:test';
 
-Deno.test({
-	name: 'curlarize',
-	permissions: {},
-}, async (t: Deno.TestContext) => {
-	await t.step('Create Module', () => {
+test('curlarize', async (t) => {
+	test('Create Module', () => {
 		const cfg: AxiosRequestConfig = {
 			url: 'http://test.com/bla',
 			headers: {
@@ -20,9 +17,9 @@ Deno.test({
 		);
 
 		const com = c.generateCommand();
-		assertEquals(
-			com,
-			'curl -i -v -L -X GET "http://test.com/bla?bla=bla" -H "Accept:test"',
-		);
+		expect(
+			com).toBe(
+				'curl -i -v -L -X GET "http://test.com/bla?bla=bla" -H "Accept:test"',
+			);
 	});
 });

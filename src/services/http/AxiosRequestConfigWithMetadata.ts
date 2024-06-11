@@ -1,7 +1,4 @@
-import {
-	type AxiosRequestConfig,
-	type InternalAxiosRequestConfig,
-} from 'axios';
+import { type InternalAxiosRequestConfig, type AxiosRequestConfig } from 'axios';
 
 export type Metadata = {
 	start?: [number, number];

@@ -1,8 +1,4 @@
-import { Injectable, Scope } from '@nestjs/common';
 import { AppLoggerService } from '../logger/app-logger.service.ts';
-import { HttpService } from '@nestjs/axios';
-import { AxiosError, type AxiosResponse, isAxiosError } from 'axios';
-import { lastValueFrom } from 'rxjs';
 import { HttpResult } from './HttpResult.ts';
 import { isNativeError } from 'node:util/types';
 import {
@@ -12,6 +8,10 @@ import {
 } from './AxiosRequestConfigWithMetadata.ts';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import { hrtime } from 'node:process';
+import { Injectable, Scope } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { isAxiosError, AxiosError, type AxiosResponse } from 'axios';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable({
 	// Transient providers are not shared across consumers.
@@ -80,7 +80,7 @@ export class AppHttpService {
 				if (cfg.metadata.end !== undefined) {
 					cfg.metadata.elapsed = Math.round(
 						(cfg.metadata.end[0] * 1e3) +
-							(cfg.metadata.end[1] * 1e-6),
+						(cfg.metadata.end[1] * 1e-6),
 					);
 				}
 			}

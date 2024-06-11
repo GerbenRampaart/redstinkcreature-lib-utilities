@@ -1,21 +1,13 @@
-import { assertArrayIncludes, assertEquals } from '@std/assert';
+import { test, expect} from 'bun:test';
 import { AppConstantsService } from './app-constants.service.ts';
 
-Deno.test({
-	name: 'AppConstantsService.validDenoEnvs',
-	permissions: {},
-}, () => {
-	assertArrayIncludes<string>(AppConstantsService.validEnvs, [
-		'repl',
-	]);
+test('AppConstantsService.validEnvs', () => {
+	expect(AppConstantsService.validEnvs).toInclude('repl');
 });
 
-Deno.test({
-	name: 'AppConstantsService.product',
-	permissions: {
-		read: true,
-	},
-}, async () => {
+test('AppConstantsService.product',
+
+async () => {
 	const p = await AppConstantsService.product();
-	assertEquals(p.name, '@redstinkcreature/lib-utilities');
+	expect(p.name).toBe('@redstinkcreature/lib-utilities');
 });

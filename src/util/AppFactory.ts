@@ -17,11 +17,8 @@ export class Factory {
 		module = LibUtilitiesModule,
 	): Promise<Factory> {
 		const app = await NestFactory.createApplicationContext(module, {
-			bufferLogs: true,
+			logger: false,
 		});
-
-		const l = app.get(AppLoggerService);
-		app.useLogger(l);
 
 		return new Factory(app);
 	}
