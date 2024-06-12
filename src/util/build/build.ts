@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { AppConstantsService } from "../../services/constants";
-import { rm, mkdir } from "node:fs/promises";
+import { rm, mkdir, writeFile } from "node:fs/promises";
 
 const buildResult = await Bun.build({
 	entrypoints: [
@@ -33,9 +33,15 @@ if (buildResult.success) {
 	});
 
 	out.forEach(async (output) => {
-		join(libDir, await output.text());
+		if (output.kind === 'entry-point') {
+			await writeFile(join(libDir, 'index.js'), await output.text());
+		}
+
+		if (output.kind === 'sourcemap') {
+			await writeFile(join(libDir, 'index.js.map'), await output.text());
+		}
 	});
-	
+
 } else {
 	console.log('Build failed');
 }
