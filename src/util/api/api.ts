@@ -43,3 +43,26 @@ export async function api(): Promise<INestApplication<Express>> {
 
 	return app;
 }
+
+export async function startPORT() {
+	const portString = process.env.PORT;
+
+	if (portString === undefined) {
+		throw new Error('process.env.PORT undefined');
+	}
+
+	const port = parseInt(portString);
+
+	if (isNaN(port)) {
+		throw new Error('process.env.PORT is not a number');
+	}
+
+	await start(port);
+}
+
+export async function start(port: number) {
+	const app = await api();
+	const l = app.get(AppLoggerService);
+	l.info(`Starting API on port ${port}`);
+	await app.listen(port);
+}

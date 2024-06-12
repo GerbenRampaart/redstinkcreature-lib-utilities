@@ -1,6 +1,6 @@
 import { AppConfigService } from './app-config.service.ts';
 import { AppConfigModule } from './app-config.module.ts';
-import { test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { test, expect, beforeAll, afterAll } from 'bun:test';
 import { AppConstantsService } from '../constants/app-constants.service.ts';
 import { ENV_NAME } from '../constants/ENV.ts';
 import z from 'zod';
@@ -8,7 +8,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { glob } from 'glob';
 import { join } from 'node:path';
 
-test('AppConfigModule', async () => {
+test('AppConfigModule', () => {
 	const appSchema = z.object({
 		TEST: z.string().default('bla'),
 		TEST_NUMBER: z.coerce.number().default(123),
@@ -22,7 +22,7 @@ test('AppConfigModule', async () => {
 	let service: AppConfigService<AppSchemaType>;
 	let module: TestingModule;
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		process.env[ENV_NAME] = 'test';
 
 		module = await Test.createTestingModule({
@@ -41,8 +41,10 @@ test('AppConfigModule', async () => {
 		service = module.get(AppConfigService<AppSchemaType>);
 	});
 
-	afterEach(async () => {
-		await module.close();
+	afterAll(async () => {
+		if (module) {
+			await module.close();
+		}
 	});
 
 	test('Check if service is defined', () => {
@@ -94,7 +96,12 @@ test('AppConfigModule', async () => {
 			'.env.test',
 		);
 
-		const files = await glob(dotEnvPath);
+		const files = await glob(dotEnvPath, {
+			ignore: [
+				join(AppConstantsService.projectRoot, AppConstantsService.libraryOutDir),
+				'node_modules',
+			]
+		});
 
 		expect(files.length).toBe(1);
 	});

@@ -1,4 +1,4 @@
-import { test, afterEach, beforeEach, expect } from 'bun:test';
+import { test, afterAll, beforeAll, expect } from 'bun:test';
 import { AppHttpService } from './app-http.service.ts';
 import { AppHttpModule } from './app-http.module.ts';
 import { AppConfigModule } from '../config/app-config.module.ts';
@@ -24,7 +24,7 @@ These errors only occur if an AxiosError is thrown because a timeout was exceede
 close the request. TODO: research some more.
 */
 
-test('AppHttpModule', async () => {
+test('AppHttpModule', () => {
 	let service: AppHttpService;
 	let module: TestingModule;
 
@@ -36,7 +36,7 @@ test('AppHttpModule', async () => {
 
 	let configService: AppConfigService<AppSchemaType>;
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		module = await Test.createTestingModule({
 			imports: [
 				AppHttpModule,
@@ -54,8 +54,10 @@ test('AppHttpModule', async () => {
 		configService = module.get(AppConfigService<AppSchemaType>);
 	});
 
-	afterEach(async () => {
-		await module.close();
+	afterAll(async () => {
+		if (module) {
+			await module.close();
+		}
 	});
 
 	test('Check if service is defined', () => {

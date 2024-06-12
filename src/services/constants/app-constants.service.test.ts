@@ -2,7 +2,7 @@ import { test, expect} from 'bun:test';
 import { AppConstantsService } from './app-constants.service.ts';
 
 test('AppConstantsService.validEnvs', () => {
-	expect(AppConstantsService.validEnvs).toInclude('repl');
+	expect(AppConstantsService.validEnvs).toContain('repl');
 });
 
 test('AppConstantsService.product',

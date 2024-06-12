@@ -2,7 +2,7 @@ import { levelsArray, LOG_LEVEL } from './LOG_LEVEL.ts';
 import { ENV, envsArray } from './ENV.ts';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { access, constants, readFile
+import { access, readFile, constants
  } from 'node:fs/promises';
  import { path } from 'app-root-path';
 
@@ -151,9 +151,5 @@ export class AppConstantsService {
 
 	public static get libraryOutDir() {
 		return 'lib';
-	}
-
-	public static get npmOutDir() {
-		return 'npm';
 	}
 }

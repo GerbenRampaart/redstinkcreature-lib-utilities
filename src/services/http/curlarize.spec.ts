@@ -2,7 +2,7 @@ import { type AxiosRequestConfig } from 'axios';
 import { CurlHelper } from './curlarize.ts';
 import { expect, test } from 'bun:test';
 
-test('curlarize', async (t) => {
+test('curlarize', () => {
 	test('Create Module', () => {
 		const cfg: AxiosRequestConfig = {
 			url: 'http://test.com/bla',

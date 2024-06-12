@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppLoggerService } from './app-logger.service.ts';
 import { AppLoggerModule } from './app-logger.module.ts';
-import { test, expect, beforeEach, afterEach } from 'bun:test';
+import { test, expect, beforeAll, afterAll } from 'bun:test';
 
-test('AppLoggerModule', async () => {
+test('AppLoggerModule', () => {
 	let service: AppLoggerService;
 	let module: TestingModule;
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		module = await Test.createTestingModule({
 			imports: [
 				AppLoggerModule,
@@ -20,8 +20,10 @@ test('AppLoggerModule', async () => {
 		service = module.get<AppLoggerService>(AppLoggerService);
 	});
 
-	afterEach(async () => {
-		await module.close();
+	afterAll(async () => {
+		if (module) {
+			await module.close();
+		}
 	});
 
 	test('Check if service is defined', () => {

@@ -1,6 +1,5 @@
-import { api } from './api.ts';
+import { startPORT } from './api.ts';
 
 (async () => {
-	const app = await api();
-	await app.listen(process.env['PORT'] ?? 3000);
+	await startPORT();
 })();

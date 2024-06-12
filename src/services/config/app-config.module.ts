@@ -108,7 +108,7 @@ export class AppConfigModule implements OnModuleInit {
 		const files = await glob(dotEnvPath, {
 			ignore: [
 				join(AppConstantsService.projectRoot, AppConstantsService.libraryOutDir),
-				join(AppConstantsService.projectRoot, AppConstantsService.npmOutDir),
+				'node_modules'
 			]
 		});
 
