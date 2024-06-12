@@ -1,49 +1,21 @@
+import { join } from "node:path";
+import { AppConstantsService } from "../services/constants";
+import { rm } from "node:fs/promises";
 
-import * as esbuild from 'esbuild';
-import { dtsPlugin } from 'esbuild-plugin-d.ts';
-import { nodeExternals } from 'esbuild-plugin-node-externals';
-
-const result = await esbuild.build({
-	plugins: [
-		nodeExternals({
-
-		}),
-		dtsPlugin({
-			tsconfig: {
-				'compilerOptions': {
-					'target': 'ESNext',
-					'experimentalDecorators': true,
-				},
-			},
-			outDir: './lib',
-		}),
-	],
-	platform: 'node',
-	target: 'esnext',
-	sourcemap: true,
-	treeShaking: true,
-	
-	entryPoints: ['./src/util/api/bootstrap.ts'],
-	outfile: './lib/lib-utilities.js',
-	bundle: true,
-	minify: false,
-	format: 'cjs',
-	external: [
-		'@nestjs/microservices',
-		'class-validator',
-		'class-transformer',
-		'@nestjs/websockets'
-	],
-	tsconfigRaw: {
-		'compilerOptions': {
-			'moduleResolution': 'NodeNext',
-			'target': 'ESNext',
-			'module': 'NodeNext',
-			'experimentalDecorators': true,
-			'emitDecoratorMetadata': true,
-			'strict': true,
-		},
-	},
+await rm(join(AppConstantsService.projectRoot, 'out'), {
+	force: true,
+	recursive: true,
 });
 
-await esbuild.stop();
+
+const buildResult = await Bun.build({
+	entrypoints: [
+		join(AppConstantsService.projectRoot, 'index.ts'),
+		join(AppConstantsService.projectRoot, 'src', 'util', 'api', 'bootstrap.ts')
+	],
+	target: 'node',
+	format: 'esm',
+	minify: true,
+	sourcemap: 'external',
+	
+  });

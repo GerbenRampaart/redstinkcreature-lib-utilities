@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { LibUtilitiesModule } from '../lib-utilities.module.ts';
-import { INestApplicationContext } from '@nestjs/common';
+import { type INestApplicationContext } from '@nestjs/common';
 import { AppLoggerService } from '../services/logger/app-logger.service.ts';
 import { AppConfigService } from '../services/config/app-config.service.ts';
 
